@@ -112,3 +112,18 @@ export async function listNotes(): Promise<Note[]> {
   const notes = await db.notes.filter((note) => !note.deleted).toArray();
   return notes.sort((a, b) => b.entryDate.localeCompare(a.entryDate));
 }
+
+/** Recomputes the tag registry from scratch. Needed after sync writes notes directly to `db.notes`, bypassing the incremental bumpTagCounts calls above. */
+export async function rebuildTagRegistry(): Promise<void> {
+  const notes = await db.notes.filter((note) => !note.deleted).toArray();
+  const counts = new Map<string, number>();
+  for (const note of notes) {
+    for (const tag of note.tags) {
+      counts.set(tag, (counts.get(tag) ?? 0) + 1);
+    }
+  }
+  await db.transaction('rw', db.tags, async () => {
+    await db.tags.clear();
+    await db.tags.bulkPut([...counts.entries()].map(([name, noteCount]) => ({ name, noteCount })));
+  });
+}

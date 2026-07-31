@@ -55,73 +55,65 @@ export function SettingsPage() {
   };
 
   if (!loaded) {
-    return <p className="p-6 text-slate-500">Lade…</p>;
+    return <p className="p-6 text-[var(--text-secondary)]">Lade…</p>;
   }
 
   return (
     <div className="mx-auto max-w-2xl px-4 pb-24 pt-6">
-      <button
-        type="button"
-        onClick={() => navigate('/')}
-        className="mb-4 text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
-      >
+      <button type="button" onClick={() => navigate('/')} className="btn btn-ghost mb-4 !px-0">
         ← Zurück
       </button>
 
-      <h1 className="mb-6 text-2xl font-bold text-slate-900 dark:text-slate-50">NAS-Sync (WebDAV)</h1>
+      <h1 className="mb-6 text-2xl font-bold text-[var(--text-primary)]">NAS-Sync (WebDAV)</h1>
 
       <div className="flex flex-col gap-3">
-        <label className="flex flex-col gap-1 text-sm text-slate-700 dark:text-slate-300">
+        <label className="field-label">
           WebDAV-URL
           <input
             type="url"
             value={url}
             onChange={(event) => setUrl(event.target.value)}
             placeholder="https://mein-nas.example.com/webdav/myNotes"
-            className="rounded border border-slate-300 bg-white px-3 py-2 text-base dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+            className="field-input"
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm text-slate-700 dark:text-slate-300">
+        <label className="field-label">
           Benutzername
           <input
             type="text"
             value={username}
             onChange={(event) => setUsername(event.target.value)}
             autoComplete="username"
-            className="rounded border border-slate-300 bg-white px-3 py-2 text-base dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+            className="field-input"
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm text-slate-700 dark:text-slate-300">
+        <label className="field-label">
           Passwort
           <input
             type="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             autoComplete="current-password"
-            className="rounded border border-slate-300 bg-white px-3 py-2 text-base dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+            className="field-input"
           />
         </label>
 
-        <p className="text-xs text-slate-500 dark:text-slate-400">
+        <p className="text-xs text-[var(--text-light)]">
           Zugangsdaten werden vorerst unverschlüsselt lokal gespeichert. Eine passphrase-geschützte Ablage folgt mit
           der Verschlüsselungs-Phase.
         </p>
 
         <div className="mt-2 flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={handleSave}
-            className="rounded-full bg-slate-200 px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600"
-          >
+          <button type="button" onClick={handleSave} className="btn btn-secondary">
             Speichern
           </button>
           <button
             type="button"
             onClick={handleTestConnection}
             disabled={!url || testState.kind === 'testing'}
-            className="rounded-full bg-slate-200 px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-300 disabled:opacity-50 dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-slate-600"
+            className="btn btn-secondary"
           >
             Verbindung testen
           </button>
@@ -129,24 +121,34 @@ export function SettingsPage() {
             type="button"
             onClick={handleSync}
             disabled={!url || status === 'syncing'}
-            className="rounded-full bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50"
+            className="btn btn-primary"
           >
             {status === 'syncing' ? 'Synchronisiere…' : 'Jetzt synchronisieren'}
           </button>
         </div>
 
-        {testState.kind === 'ok' && <p className="text-sm text-emerald-600">Verbindung erfolgreich.</p>}
-        {testState.kind === 'error' && <p className="text-sm text-red-600">Fehler: {testState.message}</p>}
+        {testState.kind === 'ok' && (
+          <p className="flex items-center gap-2 text-sm text-[var(--color-green)]">
+            <span className="status-dot status-dot-synced" />
+            Verbindung erfolgreich.
+          </p>
+        )}
+        {testState.kind === 'error' && (
+          <p className="flex items-center gap-2 text-sm text-[var(--color-red)]">
+            <span className="status-dot status-dot-conflict" />
+            Fehler: {testState.message}
+          </p>
+        )}
 
         {lastSummary && (
-          <div className="mt-4 rounded border border-slate-200 p-3 text-sm text-slate-700 dark:border-slate-700 dark:text-slate-300">
+          <div className="card p-3 text-sm text-[var(--text-secondary)]">
             <p>
               Gepusht: {lastSummary.pushed} · Geholt: {lastSummary.pulled} · Gelöscht (remote):{' '}
               {lastSummary.deletedRemote} · Gelöscht (lokal übernommen): {lastSummary.deletedLocal} · Konflikte:{' '}
               {lastSummary.conflicts}
             </p>
             {lastSummary.errors.length > 0 && (
-              <ul className="mt-2 list-disc pl-5 text-red-600">
+              <ul className="mt-2 list-disc pl-5 text-[var(--color-red)]">
                 {lastSummary.errors.map((message, index) => (
                   <li key={index}>{message}</li>
                 ))}
@@ -155,7 +157,7 @@ export function SettingsPage() {
           </div>
         )}
 
-        {!configured && <p className="text-xs text-slate-500 dark:text-slate-400">Noch nicht konfiguriert.</p>}
+        {!configured && <p className="text-xs text-[var(--text-light)]">Noch nicht konfiguriert.</p>}
       </div>
     </div>
   );

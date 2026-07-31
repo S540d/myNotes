@@ -31,18 +31,12 @@ export function HomePage() {
   return (
     <div className="mx-auto max-w-2xl px-4 pb-24 pt-6">
       <header className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-50">myNotes</h1>
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">myNotes</h1>
         <div className="flex items-center gap-2">
-          <Link
-            to="/settings"
-            className="rounded-full px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
-          >
+          <Link to="/settings" className="btn btn-ghost">
             Sync
           </Link>
-          <Link
-            to="/note/new"
-            className="rounded-full bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"
-          >
+          <Link to="/note/new" className="btn btn-primary">
             + Neuer Eintrag
           </Link>
         </div>
@@ -52,9 +46,9 @@ export function HomePage() {
       {tags && <TagFilterBar tags={tags} selected={selectedTags} onToggle={toggleTag} />}
 
       <div className="mt-4 flex flex-col gap-3">
-        {filtered === undefined && <p className="text-slate-500">Lade…</p>}
+        {filtered === undefined && <p className="text-[var(--text-secondary)]">Lade…</p>}
         {filtered && filtered.length === 0 && (
-          <p className="mt-8 text-center text-slate-500">
+          <p className="mt-8 text-center text-[var(--text-secondary)]">
             Noch keine Einträge. Leg mit „+ Neuer Eintrag“ los.
           </p>
         )}

@@ -71,7 +71,7 @@ export function NotePage() {
   }, [title, entryDate, tagsInput, body, loaded]);
 
   if (!isNew && !loaded) {
-    return <p className="p-6 text-slate-500">Lade…</p>;
+    return <p className="p-6 text-[var(--text-secondary)]">Lade…</p>;
   }
 
   const handleDelete = async () => {
@@ -83,11 +83,7 @@ export function NotePage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 pb-24 pt-6">
-      <button
-        type="button"
-        onClick={() => navigate('/')}
-        className="mb-4 text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
-      >
+      <button type="button" onClick={() => navigate('/')} className="btn btn-ghost mb-4 !px-0">
         ← Zurück
       </button>
 
@@ -96,7 +92,7 @@ export function NotePage() {
         value={title}
         onChange={(event) => setTitle(event.target.value)}
         placeholder="Titel"
-        className="w-full border-none bg-transparent text-2xl font-bold text-slate-900 outline-none dark:text-slate-50"
+        className="w-full border-none bg-transparent text-2xl font-bold text-[var(--text-primary)] outline-none"
       />
 
       <div className="mt-2 flex flex-wrap gap-3">
@@ -104,14 +100,14 @@ export function NotePage() {
           type="date"
           value={entryDate}
           onChange={(event) => setEntryDate(event.target.value)}
-          className="rounded border border-slate-300 bg-white px-2 py-1 text-sm dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+          className="field-input w-auto text-sm"
         />
         <input
           type="text"
           value={tagsInput}
           onChange={(event) => setTagsInput(event.target.value)}
           placeholder="Tags, per Komma getrennt"
-          className="flex-1 rounded border border-slate-300 bg-white px-2 py-1 text-sm dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+          className="field-input flex-1 text-sm"
         />
       </div>
 
@@ -123,19 +119,11 @@ export function NotePage() {
       </div>
 
       <div className="mt-4 flex justify-between">
-        <button
-          type="button"
-          onClick={handleSave}
-          className="rounded-full bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"
-        >
+        <button type="button" onClick={handleSave} className="btn btn-primary">
           Speichern
         </button>
         {!isNew && (
-          <button
-            type="button"
-            onClick={handleDelete}
-            className="rounded-full px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-950"
-          >
+          <button type="button" onClick={handleDelete} className="btn btn-danger">
             Löschen
           </button>
         )}

@@ -1,9 +1,27 @@
+import { useEffect, useState } from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { HomePage } from './pages/HomePage';
 import { NotePage } from './pages/NotePage';
 import { SettingsPage } from './pages/SettingsPage';
+import { PassphraseUnlockScreen } from './components/PassphraseUnlockScreen';
+import { isEncryptionSetUp } from './crypto/credentialVault';
+import { useSessionUnlocked } from './hooks/useSessionKey';
 
 function App() {
+  const [vaultSetUp, setVaultSetUp] = useState<boolean>();
+  const unlocked = useSessionUnlocked();
+
+  useEffect(() => {
+    void isEncryptionSetUp().then(setVaultSetUp);
+  }, []);
+
+  // Avoid a flash of unlocked content before we know whether a vault exists.
+  if (vaultSetUp === undefined) return null;
+
+  if (vaultSetUp && !unlocked) {
+    return <PassphraseUnlockScreen />;
+  }
+
   return (
     <HashRouter>
       <Routes>

@@ -4,6 +4,13 @@ Ein privates, betreiberunabhängiges Journal als PWA. Lange, tagebuchartige Eint
 (inkl. Reiseberichte) werden lokal auf dem Gerät gespeichert und optional mit dem
 eigenen NAS per WebDAV synchronisiert – ohne Cloud-Anbieter, ohne eigenen Server.
 
+**App:** https://s540d.github.io/myNotes/
+
+Das ist eine Demo-Instanz ohne vorkonfiguriertes NAS – sie zeigt die App und läuft
+vollständig offline im Browser/als installierte PWA. Für den eigentlichen Zweck
+(privates, synchronisiertes Journal) installierst du dir die App selbst und verbindest
+sie mit deinem eigenen NAS, sobald der WebDAV-Sync (Phase 2, siehe unten) fertig ist.
+
 ## Status
 
 Dieses Repository befindet sich im aktiven Aufbau. Der aktuelle Stand deckt **Phase 1**
@@ -45,7 +52,20 @@ npm run lint      # oxlint
 Die App ist als PWA ausgelegt und läuft installiert sowohl auf Android Chrome als auch
 über "Zum Home-Bildschirm" in iOS Safari.
 
-## Architektur & Roadmap
+## Wie geht es weiter?
 
-Der vollständige Implementierungsplan (Datenmodell, Sync-Engine, Verschlüsselungsdesign,
-Phasenplan) ist in [`docs/PLAN.md`](docs/PLAN.md) dokumentiert.
+Aktueller Stand: **Phase 1** (lokales Journal + PWA-Shell) ist abgeschlossen und läuft
+als Demo auf GitHub Pages. Der nächste Schritt ist **Phase 2: WebDAV-Sync** mit dem
+eigenen NAS, danach folgen Verschlüsselung, Volltextsuche und Import/Export. Der
+vollständige Implementierungsplan (Datenmodell, Sync-Engine, Verschlüsselungsdesign,
+Phasenplan) steht in [`docs/PLAN.md`](docs/PLAN.md).
+
+## Deployment
+
+Der `main`-Branch wird automatisch per GitHub Actions
+(`.github/workflows/deploy-pages.yml`) gebaut und auf GitHub Pages veröffentlicht.
+Voraussetzung (einmalig, durch Repo-Owner): in den Repo-Settings unter „Pages“ die
+Quelle auf „GitHub Actions“ stellen.
+
+Für einen Deploy auf dem eigenen NAS/Webserver statt GitHub Pages: `npm run build --
+--base=/` (oder den gewünschten Unterpfad) und den Inhalt von `dist/` dorthin kopieren.

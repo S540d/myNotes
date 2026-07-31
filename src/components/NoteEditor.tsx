@@ -8,12 +8,21 @@ interface NoteEditorProps {
 }
 
 const editorTheme = EditorView.theme({
-  '&': { fontSize: '1rem' },
-  '&, .cm-content, .cm-scroller': {
-    fontFamily: 'system-ui, "Segoe UI", Roboto, sans-serif',
+  '&': {
+    fontSize: '1rem',
+    backgroundColor: 'var(--card-bg)',
+    color: 'var(--text-primary)',
   },
-  '.cm-content': { lineHeight: '1.6' },
+  '&, .cm-content, .cm-scroller': {
+    fontFamily:
+      "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
+  },
+  '.cm-content': { lineHeight: '1.6', caretColor: 'var(--text-primary)' },
   '.cm-scroller': { overflow: 'auto' },
+  '.cm-gutters': { backgroundColor: 'var(--card-bg)', color: 'var(--text-light)', border: 'none' },
+  '.cm-placeholder': { color: 'var(--text-light)' },
+  '.cm-activeLine': { backgroundColor: 'transparent' },
+  '&.cm-focused': { outline: 'none' },
 });
 
 export function NoteEditor({ value, onChange }: NoteEditorProps) {
@@ -21,10 +30,11 @@ export function NoteEditor({ value, onChange }: NoteEditorProps) {
     <CodeMirror
       value={value}
       onChange={onChange}
+      theme="none"
       extensions={[markdown(), editorTheme, EditorView.lineWrapping]}
       placeholder="Schreib deinen Eintrag…"
       basicSetup={{ lineNumbers: false, foldGutter: false }}
-      className="min-h-[50vh] rounded-lg border border-slate-300 bg-white text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+      className="field-input min-h-[50vh]"
     />
   );
 }

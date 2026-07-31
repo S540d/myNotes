@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { db } from './schema';
 import type { Note, NoteDraft } from '../types/note';
+import { isEncryptionSetUp } from '../crypto/credentialVault';
 
 function normalizeTags(tags: string[]): string[] {
   const seen = new Set<string>();
@@ -36,6 +37,8 @@ async function bumpTagCounts(tags: string[], delta: number): Promise<void> {
 
 export async function createNote(draft: NoteDraft): Promise<Note> {
   const now = new Date().toISOString();
+  // New notes default to encrypted once an encryption vault exists; existing notes need the explicit bulk action.
+  const encrypted = await isEncryptionSetUp();
   const note: Note = {
     id: uuidv4(),
     title: draft.title,
@@ -45,7 +48,7 @@ export async function createNote(draft: NoteDraft): Promise<Note> {
     createdAt: now,
     updatedAt: now,
     version: 1,
-    encrypted: false,
+    encrypted,
     deleted: false,
     syncState: 'pending',
   };
@@ -126,4 +129,31 @@ export async function rebuildTagRegistry(): Promise<void> {
     await db.tags.clear();
     await db.tags.bulkPut([...counts.entries()].map(([name, noteCount]) => ({ name, noteCount })));
   });
+}
+
+/** Flips a note's at-rest encryption flag and queues it for re-upload; no-op if it's already in the target state. */
+export async function setNoteEncryption(id: string, encrypted: boolean): Promise<void> {
+  const existing = await db.notes.get(id);
+  if (!existing || existing.deleted || existing.encrypted === encrypted) return;
+
+  const now = new Date().toISOString();
+  await db.transaction('rw', db.notes, db.syncQueue, async () => {
+    await db.notes.put({ ...existing, encrypted, updatedAt: now, version: existing.version + 1, syncState: 'pending' });
+    await enqueueSync(id, 'put');
+  });
+}
+
+/** Re-flags every non-deleted note to the target encryption state, reporting progress as it goes. Returns the number of notes touched. */
+export async function bulkSetEncryption(
+  encrypted: boolean,
+  onProgress?: (done: number, total: number) => void,
+): Promise<number> {
+  const notes = await db.notes.filter((note) => !note.deleted && note.encrypted !== encrypted).toArray();
+  let done = 0;
+  for (const note of notes) {
+    await setNoteEncryption(note.id, encrypted);
+    done += 1;
+    onProgress?.(done, notes.length);
+  }
+  return notes.length;
 }

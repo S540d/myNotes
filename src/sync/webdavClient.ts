@@ -123,3 +123,23 @@ export async function testConnection(config: WebDavConfig): Promise<void> {
   const c = client(config);
   await c.getDirectoryContents('/');
 }
+
+const VAULT_DESCRIPTOR_FILE = 'vault.json';
+
+/**
+ * Publishes the encryption vault's kdf params + verifier (never the derived key or credentials)
+ * to the NAS root, so a second device can bootstrap unlocking without a prior local vault.
+ */
+export async function putVaultDescriptor(config: WebDavConfig, json: string): Promise<void> {
+  const c = client(config);
+  await c.putFileContents(VAULT_DESCRIPTOR_FILE, json, {
+    overwrite: true,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
+
+export async function getVaultDescriptor(config: WebDavConfig): Promise<string | undefined> {
+  const c = client(config);
+  if (!(await c.exists(VAULT_DESCRIPTOR_FILE))) return undefined;
+  return (await c.getFileContents(VAULT_DESCRIPTOR_FILE, { format: 'text' })) as string;
+}

@@ -1,8 +1,30 @@
 # myNotes — Journal-PWA mit NAS-Sync
 
+> **Hinweis:** Dieses Dokument ist der ursprüngliche Architektur- und Designplan (vor
+> Beginn der Umsetzung verfasst). Es bleibt als Referenz für Datenmodell, Sync-Engine-
+> und Verschlüsselungsdesign bestehen. Der aktuelle Umsetzungsstand und die konkreten
+> nächsten Arbeitspakete werden als GitHub Issues getrackt (siehe „Status & Tracking“
+> unten) — dort startet man für die aktive Weiterentwicklung, nicht hier.
+
+## Status & Tracking
+
+- ✅ **Phase 1** (Scaffolding + lokales Journal-CRUD + installierbare PWA-Shell) ist
+  umgesetzt und auf `main` gemerged.
+- ✅ **GitHub-Pages-Deploy** der Demo-Instanz ist eingerichtet
+  (`.github/workflows/deploy-pages.yml`, siehe README für den Link).
+- 🔜 Alle verbleibenden Phasen sind als einzelne GitHub Issues angelegt, jedes mit
+  eigenem Scope, betroffenen Dateien und Exit-Kriterien:
+  [#3 WebDAV-Sync](https://github.com/S540d/myNotes/issues/3) ·
+  [#4 Verschlüsselung](https://github.com/S540d/myNotes/issues/4) ·
+  [#5 Volltextsuche & Tags](https://github.com/S540d/myNotes/issues/5) ·
+  [#6 Import/Export](https://github.com/S540d/myNotes/issues/6) ·
+  [#7 Konflikt-UX & Härtung](https://github.com/S540d/myNotes/issues/7) ·
+  [#8 Testing-Infrastruktur](https://github.com/S540d/myNotes/issues/8) (begleitend).
+
 ## Kontext
 
-Das Repository ist aktuell leer (nur `LICENSE` + 1-Zeilen-`README.md`). Ziel ist eine neue, von Grund auf entwickelte Notiz-/Tagebuch-App, die:
+Ausgangslage bei Planungsbeginn: Das Repository war leer (nur `LICENSE` +
+1-Zeilen-`README.md`). Ziel war eine neue, von Grund auf entwickelte Notiz-/Tagebuch-App, die:
 - lange, journal-artige Einträge (Tagebuch, Reiseberichte) verwaltet,
 - ausschließlich mit dem eigenen NAS synchronisiert (kein Cloud-Anbieter, kein eigener Server) — **Betreiberunabhängigkeit**,
 - offline vollständig nutzbar ist,
@@ -118,13 +140,13 @@ myNotes/
 
 ## Phasenplan
 
-1. **Scaffolding**: Vite-React-TS-Setup, ESLint/Prettier/Vitest, Routing-Grundgerüst.
-2. **Lokale Journal-CRUD + PWA-Shell**: Dexie-`notes`-Tabelle, Editor/Liste, einfache Tag-Filterung, `vite-plugin-pwa`, iOS-Meta-Tags. *Exit: voll offline nutzbare Single-Device-App, installierbar auf Android & iOS.*
-3. **WebDAV-Sync**: Settings-Seite, Outbox, Push/Pull, einfache LWW-Konfliktbehandlung, manueller Sync-Button zuerst, danach automatische Trigger. *Exit: zwei Profile/Geräte gegen dieselbe NAS konvergieren nach Sync.*
-4. **Verschlüsselung**: Key-Derivation, Unlock-Screen, Crypto-Envelope in Sync integriert, Credential-Vault, globaler Toggle + Bulk-Re-Encrypt. *Exit: NAS-Dateien direkt inspiziert zeigen Chiffretext; Passphrase-Unlock übersteht Reload.*
-5. **Volltextsuche & Tags**: FlexSearch-Integration, kombinierte Text+Tag-Suche, Performance-Validierung. *Exit: <200ms Latenz bei mehreren tausend Testnotizen.*
-6. **Import/Export**: Exporter zuerst, dann Importer-Registry (Markdown/JSON, danach Evernote/WordPress), Import-Wizard-UI. *Exit: verlustfreier JSON-Roundtrip, erfolgreicher WXR- und ENEX-Import.*
-7. **Konflikt-UX-Politur & Härtung**: vollständige Diff-/Konflikt-UI, `THREAT_MODEL.md`, `NAS_SETUP.md` (CORS-Anleitung Synology/QNAP), Storage-Persistence-Flow.
+1. ✅ **Scaffolding + lokale Journal-CRUD + PWA-Shell**: Vite-React-TS-Setup, Dexie-`notes`-Tabelle, Editor/Liste, einfache Tag-Filterung, `vite-plugin-pwa`, iOS-Meta-Tags. *Exit: voll offline nutzbare Single-Device-App, installierbar auf Android & iOS.* — erledigt, siehe `src/`.
+2. **WebDAV-Sync** ([Issue #3](https://github.com/S540d/myNotes/issues/3)): Settings-Seite, Outbox, Push/Pull, einfache LWW-Konfliktbehandlung, manueller Sync-Button zuerst, danach automatische Trigger. *Exit: zwei Profile/Geräte gegen dieselbe NAS konvergieren nach Sync.*
+3. **Verschlüsselung** ([Issue #4](https://github.com/S540d/myNotes/issues/4)): Key-Derivation, Unlock-Screen, Crypto-Envelope in Sync integriert, Credential-Vault, globaler Toggle + Bulk-Re-Encrypt. *Exit: NAS-Dateien direkt inspiziert zeigen Chiffretext; Passphrase-Unlock übersteht Reload.*
+4. **Volltextsuche & Tags** ([Issue #5](https://github.com/S540d/myNotes/issues/5)): FlexSearch-Integration, kombinierte Text+Tag-Suche, Performance-Validierung. *Exit: <200ms Latenz bei mehreren tausend Testnotizen.*
+5. **Import/Export** ([Issue #6](https://github.com/S540d/myNotes/issues/6)): Exporter zuerst, dann Importer-Registry (Markdown/JSON, danach Evernote/WordPress), Import-Wizard-UI. *Exit: verlustfreier JSON-Roundtrip, erfolgreicher WXR- und ENEX-Import.*
+6. **Konflikt-UX-Politur & Härtung** ([Issue #7](https://github.com/S540d/myNotes/issues/7)): vollständige Diff-/Konflikt-UI, `THREAT_MODEL.md`, `NAS_SETUP.md` (CORS-Anleitung Synology/QNAP), Storage-Persistence-Flow.
+7. **Testing-Infrastruktur** ([Issue #8](https://github.com/S540d/myNotes/issues/8), begleitend zu 2./3.): lokaler WebDAV-Testserver, Sync-/Crypto-Unit-Tests, PWA-E2E.
 
 ## Verifikation
 

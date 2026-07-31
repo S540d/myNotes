@@ -9,7 +9,7 @@ eigenen NAS per WebDAV synchronisiert – ohne Cloud-Anbieter, ohne eigenen Serv
 Das ist eine Demo-Instanz ohne vorkonfiguriertes NAS – sie zeigt die App und läuft
 vollständig offline im Browser/als installierte PWA. Für den eigentlichen Zweck
 (privates, synchronisiertes Journal) installierst du dir die App selbst und verbindest
-sie mit deinem eigenen NAS, sobald der WebDAV-Sync (Phase 2, siehe unten) fertig ist.
+sie mit deinem eigenen NAS, sobald der WebDAV-Sync ([Issue #3](https://github.com/S540d/myNotes/issues/3)) fertig ist.
 
 ## Status
 
@@ -17,12 +17,13 @@ Dieses Repository befindet sich im aktiven Aufbau. Der aktuelle Stand deckt **Ph
 des Implementierungsplans ab: eine voll offline nutzbare, installierbare PWA mit
 lokaler Journal-Verwaltung (Anlegen, Bearbeiten, Löschen, Tag-Filter, einfache Suche).
 
-Geplante, noch nicht umgesetzte Phasen (siehe Roadmap unten):
-- WebDAV-Sync mit dem NAS
-- Client-seitige Verschlüsselung (AES-GCM, Passphrase-basiert)
-- Volltextsuche via FlexSearch (aktuell: einfache Teilstring-Suche als Platzhalter)
-- Import/Export (JSON, Markdown, Evernote `.enex`, WordPress-Export)
-- Konflikt-UX, Threat-Model-Dokumentation, NAS-Setup-Anleitung
+Geplante, noch nicht umgesetzte Phasen sind als GitHub Issues getrackt:
+- [#3 WebDAV-Sync mit dem NAS](https://github.com/S540d/myNotes/issues/3)
+- [#4 Client-seitige Verschlüsselung](https://github.com/S540d/myNotes/issues/4) (AES-GCM, Passphrase-basiert)
+- [#5 Volltextsuche via FlexSearch](https://github.com/S540d/myNotes/issues/5) (aktuell: einfache Teilstring-Suche als Platzhalter)
+- [#6 Import/Export](https://github.com/S540d/myNotes/issues/6) (JSON, Markdown, Evernote `.enex`, WordPress-Export)
+- [#7 Konflikt-UX & Härtung](https://github.com/S540d/myNotes/issues/7) (Threat-Model-Dokumentation, NAS-Setup-Anleitung)
+- [#8 Testing-Infrastruktur](https://github.com/S540d/myNotes/issues/8) (begleitend)
 
 ## Ziele
 
@@ -55,10 +56,13 @@ Die App ist als PWA ausgelegt und läuft installiert sowohl auf Android Chrome a
 ## Wie geht es weiter?
 
 Aktueller Stand: **Phase 1** (lokales Journal + PWA-Shell) ist abgeschlossen und läuft
-als Demo auf GitHub Pages. Der nächste Schritt ist **Phase 2: WebDAV-Sync** mit dem
-eigenen NAS, danach folgen Verschlüsselung, Volltextsuche und Import/Export. Der
-vollständige Implementierungsplan (Datenmodell, Sync-Engine, Verschlüsselungsdesign,
-Phasenplan) steht in [`docs/PLAN.md`](docs/PLAN.md).
+als Demo auf GitHub Pages. Der nächste Schritt ist
+[**Issue #3: WebDAV-Sync**](https://github.com/S540d/myNotes/issues/3) mit dem eigenen
+NAS, danach folgen Verschlüsselung, Volltextsuche und Import/Export (siehe die
+Issue-Liste oben). Jedes Issue ist so geschrieben, dass es eigenständig – auch in einer
+neuen Session – aufgegriffen werden kann. Der vollständige Implementierungsplan
+(Datenmodell, Sync-Engine, Verschlüsselungsdesign) steht als Referenz in
+[`docs/PLAN.md`](docs/PLAN.md).
 
 ## Deployment
 

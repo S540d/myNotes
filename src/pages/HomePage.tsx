@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNotes, useTags } from '../hooks/useNotes';
+import { useSearch } from '../hooks/useSearch';
 import { NoteCard } from '../components/NoteCard';
 import { SearchBar } from '../components/SearchBar';
 import { TagFilterBar } from '../components/TagFilterBar';
@@ -11,16 +12,7 @@ export function HomePage() {
   const [query, setQuery] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  const filtered = useMemo(() => {
-    if (!notes) return undefined;
-    const q = query.trim().toLowerCase();
-    return notes.filter((note) => {
-      const matchesQuery =
-        !q || note.title.toLowerCase().includes(q) || note.bodyMarkdown.toLowerCase().includes(q);
-      const matchesTags = selectedTags.every((tag) => note.tags.includes(tag));
-      return matchesQuery && matchesTags;
-    });
-  }, [notes, query, selectedTags]);
+  const filtered = useSearch(notes, query, selectedTags);
 
   const toggleTag = (tag: string) => {
     setSelectedTags((current) =>

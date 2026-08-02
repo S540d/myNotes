@@ -1,7 +1,7 @@
 interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
-  placeholder?: string;
+  placeholder: string;
 }
 
 export function SearchBar({ value, onChange, placeholder }: SearchBarProps) {
@@ -10,7 +10,7 @@ export function SearchBar({ value, onChange, placeholder }: SearchBarProps) {
       type="search"
       value={value}
       onChange={(event) => onChange(event.target.value)}
-      placeholder={placeholder ?? 'Suchen…'}
+      placeholder={placeholder}
       className="field-input"
     />
   );

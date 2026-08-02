@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client';
 import { registerSW } from 'virtual:pwa-register';
 import './index.css';
 import App from './App.tsx';
+import { ThemeProvider } from './theme/ThemeContext';
+import { I18nProvider } from './i18n/I18nContext';
 
 registerSW({ immediate: true });
 
@@ -15,6 +17,10 @@ if (navigator.storage?.persist) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <ThemeProvider>
+      <I18nProvider>
+        <App />
+      </I18nProvider>
+    </ThemeProvider>
   </StrictMode>,
 );

@@ -12,6 +12,9 @@ export default defineConfig({
   use: {
     baseURL: BASE_URL,
     trace: 'on-first-retry',
+    // The app defaults to German for an unrecognized browser locale; pin it so these
+    // (German-language) assertions don't depend on the runner's default locale (often en-US).
+    locale: 'de-DE',
     launchOptions: {
       executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH,
     },

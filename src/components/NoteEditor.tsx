@@ -1,6 +1,7 @@
 import CodeMirror from '@uiw/react-codemirror';
 import { markdown } from '@codemirror/lang-markdown';
 import { EditorView } from '@codemirror/view';
+import { useI18n } from '../i18n/I18nContext';
 
 interface NoteEditorProps {
   value: string;
@@ -26,13 +27,14 @@ const editorTheme = EditorView.theme({
 });
 
 export function NoteEditor({ value, onChange }: NoteEditorProps) {
+  const { t } = useI18n();
   return (
     <CodeMirror
       value={value}
       onChange={onChange}
       theme="none"
       extensions={[markdown(), editorTheme, EditorView.lineWrapping]}
-      placeholder="Schreib deinen Eintrag…"
+      placeholder={t.note.bodyPlaceholder}
       basicSetup={{ lineNumbers: false, foldGutter: false }}
       className="field-input min-h-[50vh]"
     />

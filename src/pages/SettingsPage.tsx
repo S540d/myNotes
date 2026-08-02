@@ -8,12 +8,18 @@ import { getSessionKey, setSessionKey } from '../crypto/session';
 import { useSessionUnlocked } from '../hooks/useSessionKey';
 import { bulkSetEncryption } from '../db/repository';
 import { useSync } from '../hooks/useSync';
+import { useI18n } from '../i18n/I18nContext';
+import { useTheme } from '../theme/ThemeContext';
+import type { ThemePreference } from '../theme/theme';
+import type { Language } from '../i18n/translations';
 
 type TestState = { kind: 'idle' } | { kind: 'testing' } | { kind: 'ok' } | { kind: 'error'; message: string };
 type BulkProgress = { kind: 'encrypt' | 'decrypt'; done: number; total: number };
 
 export function SettingsPage() {
   const navigate = useNavigate();
+  const { t, language, setLanguage } = useI18n();
+  const { preference: themePreference, setPreference: setThemePreference } = useTheme();
   const { status, lastSummary, configured, sync, refreshConfigured } = useSync();
   const unlocked = useSessionUnlocked();
 
@@ -98,8 +104,8 @@ export function SettingsPage() {
       if (remoteDescriptor) {
         key = await credentialVault.adoptRemoteVault(passphrase, remoteDescriptor, config);
       } else {
-        if (passphrase.length < 8) throw new Error('Die Passphrase sollte mindestens 8 Zeichen lang sein.');
-        if (passphrase !== confirmPassphrase) throw new Error('Die Passphrasen stimmen nicht überein.');
+        if (passphrase.length < 8) throw new Error(t.settings.passphraseTooShort);
+        if (passphrase !== confirmPassphrase) throw new Error(t.settings.passphraseMismatch);
         key = await credentialVault.setUpVault(passphrase, config);
       }
       setSessionKey(key);
@@ -129,20 +135,66 @@ export function SettingsPage() {
   };
 
   if (!loaded) {
-    return <p className="p-6 text-[var(--text-secondary)]">Lade…</p>;
+    return <p className="p-6 text-[var(--text-secondary)]">{t.common.loading}</p>;
   }
+
+  const themeOptions: { value: ThemePreference; label: string }[] = [
+    { value: 'system', label: t.settings.themeSystem },
+    { value: 'light', label: t.settings.themeLight },
+    { value: 'dark', label: t.settings.themeDark },
+  ];
+
+  const languageOptions: { value: Language; label: string }[] = [
+    { value: 'de', label: 'Deutsch' },
+    { value: 'en', label: 'English' },
+  ];
 
   return (
     <div className="mx-auto max-w-2xl px-4 pb-24 pt-6">
       <button type="button" onClick={() => navigate('/')} className="btn btn-ghost mb-4 !px-0">
-        ← Zurück
+        {t.common.back}
       </button>
 
-      <h1 className="mb-6 text-2xl font-bold text-[var(--text-primary)]">NAS-Sync (WebDAV)</h1>
+      <h1 className="mb-3 text-xl font-bold text-[var(--text-primary)]">{t.settings.appearanceHeading}</h1>
+      <div className="flex flex-col gap-3">
+        <div className="field-label">
+          {t.settings.themeLabel}
+          <div className="flex flex-wrap gap-2">
+            {themeOptions.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setThemePreference(option.value)}
+                className={`chip ${themePreference === option.value ? 'chip-active' : ''}`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="field-label">
+          {t.settings.languageLabel}
+          <div className="flex flex-wrap gap-2">
+            {languageOptions.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setLanguage(option.value)}
+                className={`chip ${language === option.value ? 'chip-active' : ''}`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <h1 className="mb-6 mt-8 text-2xl font-bold text-[var(--text-primary)]">{t.settings.heading}</h1>
 
       <div className="flex flex-col gap-3">
         <label className="field-label">
-          WebDAV-URL
+          {t.settings.webdavUrlLabel}
           <input
             type="url"
             value={url}
@@ -153,7 +205,7 @@ export function SettingsPage() {
         </label>
 
         <label className="field-label">
-          Benutzername
+          {t.settings.usernameLabel}
           <input
             type="text"
             value={username}
@@ -164,7 +216,7 @@ export function SettingsPage() {
         </label>
 
         <label className="field-label">
-          Passwort
+          {t.settings.passwordLabel}
           <input
             type="password"
             value={password}
@@ -175,14 +227,12 @@ export function SettingsPage() {
         </label>
 
         <p className="text-xs text-[var(--text-light)]">
-          {vaultRecord
-            ? 'Zugangsdaten liegen passphrase-verschlüsselt im lokalen Tresor.'
-            : 'Zugangsdaten werden aktuell unverschlüsselt lokal gespeichert. Verschlüsselung unten aktivieren, um das zu ändern.'}
+          {vaultRecord ? t.settings.credentialsEncrypted : t.settings.credentialsPlaintext}
         </p>
 
         <div className="mt-2 flex flex-wrap gap-2">
           <button type="button" onClick={handleSave} className="btn btn-secondary">
-            Speichern
+            {t.settings.save}
           </button>
           <button
             type="button"
@@ -190,7 +240,7 @@ export function SettingsPage() {
             disabled={!url || testState.kind === 'testing'}
             className="btn btn-secondary"
           >
-            Verbindung testen
+            {t.settings.testConnection}
           </button>
           <button
             type="button"
@@ -198,30 +248,26 @@ export function SettingsPage() {
             disabled={!url || status === 'syncing'}
             className="btn btn-primary"
           >
-            {status === 'syncing' ? 'Synchronisiere…' : 'Jetzt synchronisieren'}
+            {status === 'syncing' ? t.settings.syncing : t.settings.syncNow}
           </button>
         </div>
 
         {testState.kind === 'ok' && (
           <p className="flex items-center gap-2 text-sm text-[var(--color-green)]">
             <span className="status-dot status-dot-synced" />
-            Verbindung erfolgreich.
+            {t.settings.connectionOk}
           </p>
         )}
         {testState.kind === 'error' && (
           <p className="flex items-center gap-2 text-sm text-[var(--color-red)]">
             <span className="status-dot status-dot-conflict" />
-            Fehler: {testState.message}
+            {t.settings.connectionErrorPrefix} {testState.message}
           </p>
         )}
 
         {lastSummary && (
           <div className="card p-3 text-sm text-[var(--text-secondary)]">
-            <p>
-              Gepusht: {lastSummary.pushed} · Geholt: {lastSummary.pulled} · Gelöscht (remote):{' '}
-              {lastSummary.deletedRemote} · Gelöscht (lokal übernommen): {lastSummary.deletedLocal} · Konflikte:{' '}
-              {lastSummary.conflicts}
-            </p>
+            <p>{t.settings.syncSummary(lastSummary)}</p>
             {lastSummary.errors.length > 0 && (
               <ul className="mt-2 list-disc pl-5 text-[var(--color-red)]">
                 {lastSummary.errors.map((message, index) => (
@@ -232,21 +278,21 @@ export function SettingsPage() {
           </div>
         )}
 
-        {!configured && <p className="text-xs text-[var(--text-light)]">Noch nicht konfiguriert.</p>}
+        {!configured && <p className="text-xs text-[var(--text-light)]">{t.settings.notConfigured}</p>}
       </div>
 
-      <h2 className="mb-3 mt-8 text-xl font-bold text-[var(--text-primary)]">Verschlüsselung</h2>
+      <h2 className="mb-3 mt-8 text-xl font-bold text-[var(--text-primary)]">{t.settings.encryptionHeading}</h2>
 
       {vaultRecord ? (
         <div className="flex flex-col gap-3">
           <p className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
             <span className={`status-dot ${unlocked ? 'status-dot-synced' : 'status-dot-pending'}`} />
-            Verschlüsselung ist aktiv und {unlocked ? 'entsperrt' : 'gesperrt'}.
+            {t.settings.encryptionActive(unlocked)}
           </p>
 
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={handleLock} disabled={!unlocked} className="btn btn-secondary">
-              Sperren
+              {t.settings.lock}
             </button>
             <button
               type="button"
@@ -254,7 +300,7 @@ export function SettingsPage() {
               disabled={!unlocked || bulkProgress !== undefined}
               className="btn btn-secondary"
             >
-              Alle Notizen verschlüsseln
+              {t.settings.encryptAll}
             </button>
             <button
               type="button"
@@ -262,15 +308,14 @@ export function SettingsPage() {
               disabled={!unlocked || bulkProgress !== undefined}
               className="btn btn-secondary"
             >
-              Alle Notizen entschlüsseln
+              {t.settings.decryptAll}
             </button>
           </div>
 
           {bulkProgress && bulkProgress.total > 0 && (
             <div>
               <p className="mb-1 text-xs text-[var(--text-secondary)]">
-                {bulkProgress.kind === 'encrypt' ? 'Verschlüssele' : 'Entschlüssele'} {bulkProgress.done} /{' '}
-                {bulkProgress.total} Notizen…
+                {t.settings.bulkProgress(bulkProgress.kind, bulkProgress.done, bulkProgress.total)}
               </p>
               <div className="h-2 overflow-hidden rounded-full bg-[var(--task-bg)]">
                 <div
@@ -284,16 +329,13 @@ export function SettingsPage() {
       ) : (
         <div className="flex flex-col gap-3">
           <p className="text-sm text-[var(--text-secondary)]">
-            {remoteDescriptor === undefined &&
-              'Erst „Verbindung testen“ oben, um zu prüfen, ob dieses NAS bereits eine Verschlüsselung eingerichtet hat.'}
-            {remoteDescriptor === null &&
-              'Neue Passphrase festlegen. Titel, Text, Datum und Tags werden damit vor dem Hochladen auf das NAS verschlüsselt (AES-256-GCM); das NAS sieht nur Chiffretext.'}
-            {remoteDescriptor &&
-              'Dieses NAS hat bereits eine Verschlüsselung eingerichtet. Gib die passende Passphrase ein, um dieses Gerät damit zu verbinden.'}
+            {remoteDescriptor === undefined && t.settings.needsTestFirst}
+            {remoteDescriptor === null && t.settings.newPassphraseSetup}
+            {remoteDescriptor && t.settings.existingVaultFound}
           </p>
 
           <label className="field-label">
-            Passphrase
+            {t.settings.passphraseLabel}
             <input
               type="password"
               value={passphrase}
@@ -304,7 +346,7 @@ export function SettingsPage() {
 
           {!remoteDescriptor && (
             <label className="field-label">
-              Passphrase bestätigen
+              {t.settings.passphraseConfirmLabel}
               <input
                 type="password"
                 value={confirmPassphrase}
@@ -322,7 +364,7 @@ export function SettingsPage() {
             disabled={!passphrase || encBusy}
             className="btn btn-primary self-start"
           >
-            {encBusy ? 'Richte ein…' : remoteDescriptor ? 'Gerät verbinden' : 'Verschlüsselung aktivieren'}
+            {encBusy ? t.settings.settingUp : remoteDescriptor ? t.settings.connectDevice : t.settings.activateEncryption}
           </button>
         </div>
       )}

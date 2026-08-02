@@ -6,8 +6,10 @@ import { NoteCard } from '../components/NoteCard';
 import { SearchBar } from '../components/SearchBar';
 import { TagFilterBar } from '../components/TagFilterBar';
 import { OnThisDay } from '../components/OnThisDay';
+import { useI18n } from '../i18n/I18nContext';
 
 export function HomePage() {
+  const { t } = useI18n();
   const notes = useNotes();
   const tags = useTags();
   const [query, setQuery] = useState('');
@@ -17,7 +19,7 @@ export function HomePage() {
 
   const toggleTag = (tag: string) => {
     setSelectedTags((current) =>
-      current.includes(tag) ? current.filter((t) => t !== tag) : [...current, tag],
+      current.includes(tag) ? current.filter((existing) => existing !== tag) : [...current, tag],
     );
   };
 
@@ -27,25 +29,23 @@ export function HomePage() {
         <h1 className="text-2xl font-bold text-[var(--text-primary)]">myNotes</h1>
         <div className="flex items-center gap-2">
           <Link to="/settings" className="btn btn-ghost">
-            Sync
+            {t.home.syncLink}
           </Link>
           <Link to="/note/new" className="btn btn-primary">
-            + Neuer Eintrag
+            {t.home.newEntry}
           </Link>
         </div>
       </header>
 
       {notes && <OnThisDay notes={notes} />}
 
-      <SearchBar value={query} onChange={setQuery} placeholder="Einträge durchsuchen…" />
+      <SearchBar value={query} onChange={setQuery} placeholder={t.home.searchPlaceholder} />
       {tags && <TagFilterBar tags={tags} selected={selectedTags} onToggle={toggleTag} />}
 
       <div className="mt-4 flex flex-col gap-3">
-        {filtered === undefined && <p className="text-[var(--text-secondary)]">Lade…</p>}
+        {filtered === undefined && <p className="text-[var(--text-secondary)]">{t.common.loading}</p>}
         {filtered && filtered.length === 0 && (
-          <p className="mt-8 text-center text-[var(--text-secondary)]">
-            Noch keine Einträge. Leg mit „+ Neuer Eintrag“ los.
-          </p>
+          <p className="mt-8 text-center text-[var(--text-secondary)]">{t.home.emptyState}</p>
         )}
         {filtered?.map((note) => <NoteCard key={note.id} note={note} />)}
       </div>

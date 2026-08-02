@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { suggestMatchingTags, suggestTagsFromText } from '../utils/tagSuggestions';
+import { useI18n } from '../i18n/I18nContext';
 
 interface TagInputProps {
   tags: string[];
@@ -15,6 +16,7 @@ function normalize(tag: string): string {
 }
 
 export function TagInput({ tags, onChange, knownTags, suggestFromText }: TagInputProps) {
+  const { t } = useI18n();
   const [draft, setDraft] = useState('');
 
   const addTag = (raw: string) => {
@@ -49,7 +51,7 @@ export function TagInput({ tags, onChange, knownTags, suggestFromText }: TagInpu
             <button
               type="button"
               onClick={() => removeTag(tag)}
-              aria-label={`Tag ${tag} entfernen`}
+              aria-label={t.tagInput.removeAria(tag)}
               className="opacity-70 hover:opacity-100"
             >
               ×
@@ -62,7 +64,7 @@ export function TagInput({ tags, onChange, knownTags, suggestFromText }: TagInpu
           onChange={(event) => setDraft(event.target.value)}
           onKeyDown={handleKeyDown}
           onBlur={() => addTag(draft)}
-          placeholder={tags.length === 0 ? 'Tags hinzufügen…' : ''}
+          placeholder={tags.length === 0 ? t.tagInput.placeholder : ''}
           className="min-w-[6rem] flex-1 border-none bg-transparent outline-none"
         />
       </div>
@@ -79,7 +81,7 @@ export function TagInput({ tags, onChange, knownTags, suggestFromText }: TagInpu
 
       {textSuggestions.length > 0 && (
         <div className="flex flex-wrap items-center gap-1 text-xs text-[var(--text-secondary)]">
-          Vorschlag aus dem Text:
+          {t.tagInput.textSuggestionLabel}
           {textSuggestions.map((tag) => (
             <button key={tag} type="button" onClick={() => addTag(tag)} className="chip">
               #{tag}

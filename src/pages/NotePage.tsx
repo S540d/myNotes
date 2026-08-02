@@ -8,6 +8,7 @@ import { TagInput } from '../components/TagInput';
 import { SimilarNotes } from '../components/SimilarNotes';
 import { TemplatePicker } from '../components/TemplatePicker';
 import { suggestTitleFromBody } from '../utils/autoTitle';
+import { useI18n } from '../i18n/I18nContext';
 
 const AUTOSAVE_DELAY_MS = 800;
 
@@ -16,6 +17,7 @@ function todayIso(): string {
 }
 
 export function NotePage() {
+  const { t } = useI18n();
   const { id } = useParams<{ id: string }>();
   const isNew = id === 'new';
   const existing = useNote(isNew ? undefined : id);
@@ -73,14 +75,14 @@ export function NotePage() {
   }, [title, entryDate, tags, body, loaded]);
 
   if (!isNew && !loaded) {
-    return <p className="p-6 text-[var(--text-secondary)]">Lade…</p>;
+    return <p className="p-6 text-[var(--text-secondary)]">{t.common.loading}</p>;
   }
 
   const titleSuggestion = !title.trim() ? suggestTitleFromBody(body) : '';
 
   const handleDelete = async () => {
     if (!id || isNew) return;
-    if (!confirm('Diesen Eintrag wirklich löschen?')) return;
+    if (!confirm(t.note.deleteConfirm)) return;
     await deleteNote(id);
     navigate('/');
   };
@@ -88,14 +90,14 @@ export function NotePage() {
   return (
     <div className="mx-auto max-w-2xl px-4 pb-24 pt-6">
       <button type="button" onClick={() => navigate('/')} className="btn btn-ghost mb-4 !px-0">
-        ← Zurück
+        {t.common.back}
       </button>
 
       <input
         type="text"
         value={title}
         onChange={(event) => setTitle(event.target.value)}
-        placeholder="Titel"
+        placeholder={t.note.titlePlaceholder}
         className="w-full border-none bg-transparent text-2xl font-bold text-[var(--text-primary)] outline-none"
       />
       {titleSuggestion && (
@@ -104,7 +106,7 @@ export function NotePage() {
           onClick={() => setTitle(titleSuggestion)}
           className="mt-1 block text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
         >
-          Titel übernehmen: „{titleSuggestion}“
+          {t.note.titleSuggestion(titleSuggestion)}
         </button>
       )}
 
@@ -118,7 +120,7 @@ export function NotePage() {
         <TagInput
           tags={tags}
           onChange={setTags}
-          knownTags={(allTags ?? []).map((t) => t.name)}
+          knownTags={(allTags ?? []).map((tag) => tag.name)}
           suggestFromText={`${title} ${body}`}
         />
       </div>
@@ -136,11 +138,11 @@ export function NotePage() {
 
       <div className="mt-4 flex justify-between">
         <button type="button" onClick={handleSave} className="btn btn-primary">
-          Speichern
+          {t.note.save}
         </button>
         {!isNew && (
           <button type="button" onClick={handleDelete} className="btn btn-danger">
-            Löschen
+            {t.note.delete}
           </button>
         )}
       </div>

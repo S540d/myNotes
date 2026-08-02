@@ -39,6 +39,32 @@
   }
 }
 
+/* Explicit user choice (ThemeProvider) overrides the OS-driven media query above in both directions. */
+:root[data-theme='dark'] {
+  --bg-color: #1a1a1a;
+  --card-bg: #2a2a2a;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --border-color: #404040;
+  --grid-color: #404040;
+  --task-bg: #1f1f1f;
+  --input-border: #4b5563;
+  --hover-bg: rgba(102, 126, 234, 0.2);
+}
+
+:root[data-theme='light'] {
+  --bg-color: #f5f5f5;
+  --card-bg: white;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-light: #9ca3af;
+  --border-color: #e5e7eb;
+  --grid-color: #e5e7eb;
+  --task-bg: #fafafa;
+  --input-border: #e0e0e0;
+  --hover-bg: rgba(102, 126, 234, 0.1);
+}
+
 @layer base {
   body {
     margin: 0;

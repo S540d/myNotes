@@ -54,3 +54,18 @@ export function searchNoteIds(query: string, limit = 1000): string[] {
   const results = index.search(trimmed, { merge: true, limit }) as Array<{ id: string | number }>;
   return results.map((result) => String(result.id));
 }
+
+/**
+ * Finds notes whose title/body are most similar to the given one, by querying the same
+ * FlexSearch index with the note's own content — no separate similarity model needed.
+ */
+export function findSimilarNoteIds(note: { id: string; title: string; bodyMarkdown: string }, limit = 5): string[] {
+  const query = `${note.title} ${note.bodyMarkdown}`.trim();
+  if (!query) return [];
+  // `suggest: true` turns the query into an OR/partial match instead of requiring every one of
+  // its (often many) words to hit — without it, this multi-word self-query only ever matches itself.
+  const results = index.search(query, { merge: true, suggest: true, limit: limit + 1 }) as Array<{
+    id: string | number;
+  }>;
+  return results.map((result) => String(result.id)).filter((id) => id !== note.id).slice(0, limit);
+}

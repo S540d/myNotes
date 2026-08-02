@@ -5,6 +5,7 @@ import { useSearch } from '../hooks/useSearch';
 import { NoteCard } from '../components/NoteCard';
 import { SearchBar } from '../components/SearchBar';
 import { TagFilterBar } from '../components/TagFilterBar';
+import { OnThisDay } from '../components/OnThisDay';
 
 export function HomePage() {
   const notes = useNotes();
@@ -33,6 +34,8 @@ export function HomePage() {
           </Link>
         </div>
       </header>
+
+      {notes && <OnThisDay notes={notes} />}
 
       <SearchBar value={query} onChange={setQuery} placeholder="Einträge durchsuchen…" />
       {tags && <TagFilterBar tags={tags} selected={selectedTags} onToggle={toggleTag} />}

@@ -1,0 +1,13 @@
+services:
+  webdav:
+    image: hacdias/webdav:5
+    container_name: mynotes-webdav-test
+    ports:
+      - "6065:6065"
+    volumes:
+      - ./test/webdav/config.yml:/config.yml:ro
+      - webdav-data:/data
+    command: ["-c", "/config.yml"]
+
+volumes:
+  webdav-data:

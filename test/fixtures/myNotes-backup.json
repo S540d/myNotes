@@ -1,0 +1,30 @@
+{
+  "exportedAt": "2026-08-01T12:00:00.000Z",
+  "format": "myNotes-json-v1",
+  "notes": [
+    {
+      "id": "3f9a3b0e-6f2e-4b8a-9d0a-111111111111",
+      "title": "Ankunft in Lissabon",
+      "bodyMarkdown": "# Tag 1\n\nHeute in **Lissabon** angekommen. Wetter: ☀️ 27°C.\n\n- Hotel bezogen\n- Stadtviertel Alfama erkundet",
+      "entryDate": "2026-06-10",
+      "tags": ["reise", "portugal"],
+      "createdAt": "2026-06-10T20:15:00.000Z",
+      "updatedAt": "2026-06-10T20:15:00.000Z",
+      "version": 1,
+      "encrypted": false,
+      "deleted": false
+    },
+    {
+      "id": "3f9a3b0e-6f2e-4b8a-9d0a-222222222222",
+      "title": "Leerer Eintrag",
+      "bodyMarkdown": "",
+      "entryDate": "2026-06-11",
+      "tags": [],
+      "createdAt": "2026-06-11T09:00:00.000Z",
+      "updatedAt": "2026-06-11T09:00:00.000Z",
+      "version": 1,
+      "encrypted": false,
+      "deleted": false
+    }
+  ]
+}

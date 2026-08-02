@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { Note } from '../types/note';
-import { searchNoteIds, syncIndex } from '../search/indexManager';
+import { findSimilarNoteIds, searchNoteIds, syncIndex } from '../search/indexManager';
 import { filterByTags } from '../search/tagUtils';
 
 /**
@@ -26,4 +26,16 @@ export function useSearch(notes: Note[] | undefined, query: string, selectedTags
 
     return filterByTags(textMatched, selectedTags);
   }, [notes, query, selectedTags]);
+}
+
+/** Notes most similar in content to `note`, using the same FlexSearch index as full-text search. */
+export function useSimilarNotes(note: Note | undefined, allNotes: Note[] | undefined, limit = 5): Note[] {
+  return useMemo(() => {
+    if (!note || !allNotes) return [];
+    syncIndex(allNotes);
+    const byId = new Map(allNotes.map((n) => [n.id, n]));
+    return findSimilarNoteIds(note, limit)
+      .map((id) => byId.get(id))
+      .filter((n): n is Note => n !== undefined);
+  }, [note, allNotes, limit]);
 }

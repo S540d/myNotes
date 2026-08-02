@@ -1,8 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useNote } from '../hooks/useNotes';
+import { useNote, useNotes, useTags } from '../hooks/useNotes';
+import { useSimilarNotes } from '../hooks/useSearch';
 import { createNote, deleteNote, updateNote } from '../db/repository';
 import { NoteEditor } from '../components/NoteEditor';
+import { TagInput } from '../components/TagInput';
+import { SimilarNotes } from '../components/SimilarNotes';
+import { TemplatePicker } from '../components/TemplatePicker';
+import { suggestTitleFromBody } from '../utils/autoTitle';
 
 const AUTOSAVE_DELAY_MS = 800;
 
@@ -14,11 +19,14 @@ export function NotePage() {
   const { id } = useParams<{ id: string }>();
   const isNew = id === 'new';
   const existing = useNote(isNew ? undefined : id);
+  const allTags = useTags();
+  const allNotes = useNotes();
+  const similarNotes = useSimilarNotes(existing, allNotes);
   const navigate = useNavigate();
 
   const [title, setTitle] = useState('');
   const [entryDate, setEntryDate] = useState(todayIso());
-  const [tagsInput, setTagsInput] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
   const [body, setBody] = useState('');
   const [loaded, setLoaded] = useState(isNew);
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -28,21 +36,15 @@ export function NotePage() {
     if (existing && !loaded) {
       setTitle(existing.title);
       setEntryDate(existing.entryDate);
-      setTagsInput(existing.tags.join(', '));
+      setTags(existing.tags);
       setBody(existing.bodyMarkdown);
       setLoaded(true);
       skipNextAutosave.current = true;
     }
   }, [existing, loaded]);
 
-  const parseTags = () =>
-    tagsInput
-      .split(',')
-      .map((t) => t.trim())
-      .filter(Boolean);
-
   const handleSave = async () => {
-    const draft = { title, bodyMarkdown: body, entryDate, tags: parseTags() };
+    const draft = { title, bodyMarkdown: body, entryDate, tags };
     if (isNew) {
       const note = await createNote(draft);
       navigate(`/note/${note.id}`, { replace: true });
@@ -68,11 +70,13 @@ export function NotePage() {
 
     return () => clearTimeout(autosaveTimer.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, entryDate, tagsInput, body, loaded]);
+  }, [title, entryDate, tags, body, loaded]);
 
   if (!isNew && !loaded) {
     return <p className="p-6 text-[var(--text-secondary)]">Lade…</p>;
   }
+
+  const titleSuggestion = !title.trim() ? suggestTitleFromBody(body) : '';
 
   const handleDelete = async () => {
     if (!id || isNew) return;
@@ -94,6 +98,15 @@ export function NotePage() {
         placeholder="Titel"
         className="w-full border-none bg-transparent text-2xl font-bold text-[var(--text-primary)] outline-none"
       />
+      {titleSuggestion && (
+        <button
+          type="button"
+          onClick={() => setTitle(titleSuggestion)}
+          className="mt-1 block text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+        >
+          Titel übernehmen: „{titleSuggestion}“
+        </button>
+      )}
 
       <div className="mt-2 flex flex-wrap gap-3">
         <input
@@ -102,14 +115,15 @@ export function NotePage() {
           onChange={(event) => setEntryDate(event.target.value)}
           className="field-input w-auto text-sm"
         />
-        <input
-          type="text"
-          value={tagsInput}
-          onChange={(event) => setTagsInput(event.target.value)}
-          placeholder="Tags, per Komma getrennt"
-          className="field-input flex-1 text-sm"
+        <TagInput
+          tags={tags}
+          onChange={setTags}
+          knownTags={(allTags ?? []).map((t) => t.name)}
+          suggestFromText={`${title} ${body}`}
         />
       </div>
+
+      {isNew && !body && <TemplatePicker onPick={setBody} />}
 
       <div className="mt-4">
         <NoteEditor
@@ -117,6 +131,8 @@ export function NotePage() {
           onChange={(value) => setBody(value)}
         />
       </div>
+
+      {!isNew && <SimilarNotes notes={similarNotes} />}
 
       <div className="mt-4 flex justify-between">
         <button type="button" onClick={handleSave} className="btn btn-primary">

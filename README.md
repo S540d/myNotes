@@ -48,7 +48,12 @@ npm install
 npm run dev      # Dev-Server
 npm run build    # Produktions-Build (inkl. Typecheck)
 npm run lint      # oxlint
+npm test          # Vitest unit tests
+npm run test:e2e  # Playwright PWA E2E (installiert vorher `npx playwright install chromium`)
 ```
+
+Details zur Test-Infrastruktur (inkl. optionalem WebDAV-Integrationstest via Docker):
+[`docs/TESTING.md`](docs/TESTING.md).
 
 Die App ist als PWA ausgelegt und läuft installiert sowohl auf Android Chrome als auch
 über "Zum Home-Bildschirm" in iOS Safari.

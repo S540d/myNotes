@@ -32,6 +32,25 @@ export interface Translations {
   similarNotes: {
     heading: string;
   };
+  conflict: {
+    bannerHeading: string;
+    bannerDescription: (n: number) => string;
+    resolve: string;
+    dialogHeading: string;
+    dialogDescription: string;
+    localHeading: string;
+    remoteHeading: string;
+    noShadowNotice: string;
+    fieldTitle: string;
+    fieldDate: string;
+    fieldTags: string;
+    fieldBody: string;
+    keepLocal: string;
+    keepRemote: string;
+    keepBoth: string;
+    copyTitleSuffix: string;
+    close: string;
+  };
   noteCard: {
     noTitle: string;
     synced: string;
@@ -92,6 +111,7 @@ export interface Translations {
     themeLight: string;
     themeDark: string;
     languageLabel: string;
+    storagePersistenceWarning: string;
   };
 }
 
@@ -126,6 +146,30 @@ const de: Translations = {
   },
   similarNotes: {
     heading: 'Ähnliche Einträge',
+  },
+  conflict: {
+    bannerHeading: 'Sync-Konflikte',
+    bannerDescription: (n) =>
+      n === 1
+        ? 'Ein Eintrag wurde auf einem anderen Gerät parallel geändert und braucht deine Entscheidung.'
+        : `${n} Einträge wurden auf einem anderen Gerät parallel geändert und brauchen deine Entscheidung.`,
+    resolve: 'Auflösen',
+    dialogHeading: 'Konflikt auflösen',
+    dialogDescription:
+      'Dieser Eintrag wurde seit dem letzten Sync auf diesem und einem anderen Gerät geändert. Wähle, welche Version gelten soll.',
+    localHeading: 'Deine Version (dieses Gerät)',
+    remoteHeading: 'Andere Version',
+    noShadowNotice:
+      'Die andere Version konnte nicht geladen werden (z.B. weil sie verschlüsselt und gesperrt ist). Du kannst trotzdem deine Version behalten.',
+    fieldTitle: 'Titel',
+    fieldDate: 'Datum',
+    fieldTags: 'Tags',
+    fieldBody: 'Text',
+    keepLocal: 'Meine behalten',
+    keepRemote: 'Andere behalten',
+    keepBoth: 'Beide behalten',
+    copyTitleSuffix: ' (Konfliktkopie)',
+    close: 'Schließen',
   },
   noteCard: {
     noTitle: 'Ohne Titel',
@@ -185,6 +229,8 @@ const de: Translations = {
     themeLight: 'Hell',
     themeDark: 'Dunkel',
     languageLabel: 'Sprache',
+    storagePersistenceWarning:
+      'Der Browser hat dauerhaften Speicher für myNotes noch nicht zugesichert. Bei seltener Nutzung könnten Daten, die noch nicht mit dem NAS synchronisiert sind, gelöscht werden. „Zum Home-Bildschirm hinzufügen“ verringert dieses Risiko.',
   },
 };
 
@@ -219,6 +265,30 @@ const en: Translations = {
   },
   similarNotes: {
     heading: 'Similar entries',
+  },
+  conflict: {
+    bannerHeading: 'Sync conflicts',
+    bannerDescription: (n) =>
+      n === 1
+        ? 'One entry was changed on another device at the same time and needs your decision.'
+        : `${n} entries were changed on another device at the same time and need your decision.`,
+    resolve: 'Resolve',
+    dialogHeading: 'Resolve conflict',
+    dialogDescription:
+      'This entry was changed on both this and another device since the last sync. Choose which version should win.',
+    localHeading: 'Your version (this device)',
+    remoteHeading: 'Other version',
+    noShadowNotice:
+      "The other version couldn't be loaded (e.g. because it's encrypted and locked). You can still keep your version.",
+    fieldTitle: 'Title',
+    fieldDate: 'Date',
+    fieldTags: 'Tags',
+    fieldBody: 'Text',
+    keepLocal: 'Keep mine',
+    keepRemote: 'Keep theirs',
+    keepBoth: 'Keep both',
+    copyTitleSuffix: ' (conflict copy)',
+    close: 'Close',
   },
   noteCard: {
     noTitle: 'Untitled',
@@ -277,6 +347,8 @@ const en: Translations = {
     themeLight: 'Light',
     themeDark: 'Dark',
     languageLabel: 'Language',
+    storagePersistenceWarning:
+      "The browser hasn't granted persistent storage for myNotes yet. With infrequent use, data not yet synced to the NAS could be evicted. \"Add to Home Screen\" reduces this risk.",
   },
 };
 

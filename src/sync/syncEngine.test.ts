@@ -161,7 +161,10 @@ describe('runSync', () => {
 
     expect(summary.conflicts).toBe(1);
     expect(summary.errors.some((e) => e.includes('Konflikt'))).toBe(true);
-    expect((await db.notes.get(note.id))?.syncState).toBe('conflict');
+    const conflicted = await db.notes.get(note.id);
+    expect(conflicted?.syncState).toBe('conflict');
+    // The losing remote version is captured as a shadow copy so the user can compare/resolve it.
+    expect(conflicted?.conflictShadow).toMatchObject({ bodyMarkdown: 'from other device', version: 2 });
   });
 
   it('keeps a note pending and retries after a transient push failure (offline queue + reconnect)', async () => {

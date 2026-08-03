@@ -8,6 +8,7 @@ import { getSessionKey, setSessionKey } from '../crypto/session';
 import { useSessionUnlocked } from '../hooks/useSessionKey';
 import { bulkSetEncryption } from '../db/repository';
 import { useSync } from '../hooks/useSync';
+import { useStoragePersistence } from '../hooks/useStoragePersistence';
 import { useI18n } from '../i18n/I18nContext';
 import { useTheme } from '../theme/ThemeContext';
 import type { ThemePreference } from '../theme/theme';
@@ -22,6 +23,7 @@ export function SettingsPage() {
   const { preference: themePreference, setPreference: setThemePreference } = useTheme();
   const { status, lastSummary, configured, sync, refreshConfigured } = useSync();
   const unlocked = useSessionUnlocked();
+  const storagePersistence = useStoragePersistence();
 
   const [url, setUrl] = useState('');
   const [username, setUsername] = useState('');
@@ -188,6 +190,13 @@ export function SettingsPage() {
             ))}
           </div>
         </div>
+
+        {storagePersistence?.supported && !storagePersistence.persisted && (
+          <p className="flex items-center gap-2 text-xs text-[var(--color-amber)]">
+            <span className="status-dot status-dot-pending" />
+            {t.settings.storagePersistenceWarning}
+          </p>
+        )}
       </div>
 
       <h1 className="mb-6 mt-8 text-2xl font-bold text-[var(--text-primary)]">{t.settings.heading}</h1>

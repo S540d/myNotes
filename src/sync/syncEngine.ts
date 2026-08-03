@@ -1,6 +1,6 @@
 import { db } from '../db/schema';
 import { rebuildTagRegistry } from '../db/repository';
-import type { Note } from '../types/note';
+import type { ConflictShadow, Note } from '../types/note';
 import * as webdavClient from './webdavClient';
 import type { WebDavConfig } from './webdavClient';
 import { resolveLastWriteWins } from './conflictResolver';
@@ -112,7 +112,8 @@ async function pushOutbox(
       } else {
         const body = note.encrypted
           ? JSON.stringify(await encryptNote(note, sessionKey as CryptoKey, kdf as KdfParams))
-          : JSON.stringify(note);
+          // conflictShadow is a local-only resolution aid, never part of the synced note.
+          : JSON.stringify({ ...note, conflictShadow: undefined });
         await webdavClient.putNoteFile(config, note.id, body, note.remoteEtag ?? null);
         await db.notes.update(note.id, { syncState: 'synced' });
         summary.pushed += 1;
@@ -120,7 +121,8 @@ async function pushOutbox(
       await clearQueueEntries(entry.queueIds);
     } catch (err) {
       if (err instanceof webdavClient.PreconditionFailedError) {
-        await db.notes.update(note.id, { syncState: 'conflict' });
+        const shadow = await captureConflictShadow(config, note.id, sessionKey, summary);
+        await db.notes.update(note.id, { syncState: 'conflict', conflictShadow: shadow });
         await clearQueueEntries(entry.queueIds);
         summary.conflicts += 1;
         summary.errors.push(`Konflikt bei „${note.title}“: Remote wurde parallel geändert.`);
@@ -135,6 +137,33 @@ async function pushOutbox(
         summary.errors.push(`Push für „${note.title}“ fehlgeschlagen, wird beim nächsten Sync erneut versucht.`);
       }
     }
+  }
+}
+
+/**
+ * Best-effort fetch of the remote note that just won a push race, so the conflict UI can show
+ * the user what it looks like. Returns undefined (not thrown) on any failure — the note still
+ * gets flagged 'conflict' either way, just without a side-by-side comparison to offer.
+ */
+async function captureConflictShadow(
+  config: WebDavConfig,
+  id: string,
+  sessionKey: CryptoKey | undefined,
+  summary: SyncSummary,
+): Promise<ConflictShadow | undefined> {
+  try {
+    const remoteNote = await downloadNote(config, id, sessionKey, summary);
+    if (!remoteNote) return undefined;
+    return {
+      title: remoteNote.title,
+      bodyMarkdown: remoteNote.bodyMarkdown,
+      entryDate: remoteNote.entryDate,
+      tags: remoteNote.tags,
+      updatedAt: remoteNote.updatedAt,
+      version: remoteNote.version,
+    };
+  } catch {
+    return undefined;
   }
 }
 

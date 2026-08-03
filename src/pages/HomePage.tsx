@@ -6,6 +6,7 @@ import { NoteCard } from '../components/NoteCard';
 import { SearchBar } from '../components/SearchBar';
 import { TagFilterBar } from '../components/TagFilterBar';
 import { OnThisDay } from '../components/OnThisDay';
+import { ConflictBanner } from '../components/ConflictBanner';
 import { useI18n } from '../i18n/I18nContext';
 
 export function HomePage() {
@@ -37,6 +38,7 @@ export function HomePage() {
         </div>
       </header>
 
+      {notes && <ConflictBanner notes={notes} />}
       {notes && <OnThisDay notes={notes} />}
 
       <SearchBar value={query} onChange={setQuery} placeholder={t.home.searchPlaceholder} />

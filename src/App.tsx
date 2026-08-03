@@ -3,6 +3,7 @@ import { HashRouter, Route, Routes } from 'react-router-dom';
 import { HomePage } from './pages/HomePage';
 import { NotePage } from './pages/NotePage';
 import { SettingsPage } from './pages/SettingsPage';
+import { ImportExportPage } from './pages/ImportExportPage';
 import { PassphraseUnlockScreen } from './components/PassphraseUnlockScreen';
 import { isEncryptionSetUp } from './crypto/credentialVault';
 import { useSessionUnlocked } from './hooks/useSessionKey';
@@ -28,6 +29,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/note/:id" element={<NotePage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/import-export" element={<ImportExportPage />} />
       </Routes>
     </HashRouter>
   );

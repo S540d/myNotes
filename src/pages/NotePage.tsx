@@ -31,6 +31,7 @@ export function NotePage() {
   const [tags, setTags] = useState<string[]>([]);
   const [body, setBody] = useState('');
   const [loaded, setLoaded] = useState(isNew);
+  const [lastSavedAt, setLastSavedAt] = useState<Date>();
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const skipNextAutosave = useRef(isNew);
 
@@ -53,6 +54,7 @@ export function NotePage() {
     } else if (id) {
       await updateNote(id, draft);
     }
+    setLastSavedAt(new Date());
   };
 
   // Debounced autosave: skip the run right after initial load / creation so we
@@ -136,10 +138,17 @@ export function NotePage() {
 
       {!isNew && <SimilarNotes notes={similarNotes} />}
 
-      <div className="mt-4 flex justify-between">
-        <button type="button" onClick={handleSave} className="btn btn-primary">
-          {t.note.save}
-        </button>
+      <div className="mt-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button type="button" onClick={handleSave} className="btn btn-primary">
+            {t.note.save}
+          </button>
+          {lastSavedAt && (
+            <span className="text-xs text-[var(--text-secondary)]">
+              {t.note.saved} · {lastSavedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </span>
+          )}
+        </div>
         {!isNew && (
           <button type="button" onClick={handleDelete} className="btn btn-danger">
             {t.note.delete}

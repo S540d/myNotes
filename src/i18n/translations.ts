@@ -17,6 +17,7 @@ export interface Translations {
     titleSuggestion: (title: string) => string;
     bodyPlaceholder: string;
     save: string;
+    saved: string;
     delete: string;
     deleteConfirm: string;
     templateLabel: string;
@@ -29,6 +30,16 @@ export interface Translations {
   onThisDay: {
     heading: string;
     yearsAgo: (n: number, title: string) => string;
+  };
+  tagFilterBar: {
+    editParentAria: (name: string) => string;
+    parentLabel: string;
+    noParent: string;
+  };
+  homeGrouping: {
+    groupByDate: string;
+    groupByTag: string;
+    noTagGroup: string;
   };
   similarNotes: {
     heading: string;
@@ -154,6 +165,7 @@ const de: Translations = {
     titleSuggestion: (title) => `Titel übernehmen: „${title}“`,
     bodyPlaceholder: 'Schreib deinen Eintrag…',
     save: 'Speichern',
+    saved: 'Gespeichert',
     delete: 'Löschen',
     deleteConfirm: 'Diesen Eintrag wirklich löschen?',
     templateLabel: 'Vorlage:',
@@ -166,6 +178,16 @@ const de: Translations = {
   onThisDay: {
     heading: 'Am gleichen Tag',
     yearsAgo: (n, title) => `Vor ${n} ${n === 1 ? 'Jahr' : 'Jahren'}: ${title}`,
+  },
+  tagFilterBar: {
+    editParentAria: (name) => `Übergeordneten Tag für ${name} festlegen`,
+    parentLabel: 'Übergeordneter Tag:',
+    noParent: '– keiner –',
+  },
+  homeGrouping: {
+    groupByDate: 'Nach Datum',
+    groupByTag: 'Nach Tag',
+    noTagGroup: 'Ohne Tag',
   },
   similarNotes: {
     heading: 'Ähnliche Einträge',
@@ -295,6 +317,7 @@ const en: Translations = {
     titleSuggestion: (title) => `Use title: "${title}"`,
     bodyPlaceholder: 'Write your entry…',
     save: 'Save',
+    saved: 'Saved',
     delete: 'Delete',
     deleteConfirm: 'Really delete this entry?',
     templateLabel: 'Template:',
@@ -307,6 +330,16 @@ const en: Translations = {
   onThisDay: {
     heading: 'On this day',
     yearsAgo: (n, title) => `${n} ${n === 1 ? 'year' : 'years'} ago: ${title}`,
+  },
+  tagFilterBar: {
+    editParentAria: (name) => `Set parent tag for ${name}`,
+    parentLabel: 'Parent tag:',
+    noParent: '– none –',
+  },
+  homeGrouping: {
+    groupByDate: 'By date',
+    groupByTag: 'By tag',
+    noTagGroup: 'No tag',
   },
   similarNotes: {
     heading: 'Similar entries',

@@ -2,9 +2,14 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { db } from './schema';
 import {
   createNote,
+  deleteNote,
+  getTagTree,
+  rebuildTagRegistry,
   resolveConflictKeepBoth,
   resolveConflictKeepLocal,
   resolveConflictKeepRemote,
+  setTagParent,
+  updateNote,
 } from './repository';
 import type { ConflictShadow } from '../types/note';
 
@@ -114,5 +119,61 @@ describe('resolveConflictKeepBoth', () => {
     expect(copy?.syncState).toBe('pending');
 
     expect(await db.syncQueue.count()).toBe(2);
+  });
+});
+
+describe('setTagParent / getTagTree', () => {
+  it('nests a tag under its parent, creating the parent tag if it does not exist yet', async () => {
+    await createNote({ title: 'X', bodyMarkdown: '', entryDate: '2026-01-01', tags: ['lissabon'] });
+
+    await setTagParent('lissabon', 'reise');
+
+    const tree = await getTagTree();
+    expect(tree).toHaveLength(1);
+    expect(tree[0].name).toBe('reise');
+    expect(tree[0].noteCount).toBe(0);
+    expect(tree[0].children[0].name).toBe('lissabon');
+    expect(tree[0].children[0].noteCount).toBe(1);
+  });
+
+  it('rejects a change that would create a cycle', async () => {
+    await setTagParent('portugal', 'reise');
+    await setTagParent('lissabon', 'portugal');
+
+    await expect(setTagParent('reise', 'lissabon')).rejects.toThrow(/cycle/);
+
+    // Unchanged: rejection must not have partially applied.
+    const tree = await getTagTree();
+    expect(tree).toHaveLength(1);
+    expect(tree[0].name).toBe('reise');
+  });
+
+  it('clears a parent when set to undefined', async () => {
+    await setTagParent('portugal', 'reise');
+    await setTagParent('portugal', undefined);
+
+    const tree = await getTagTree();
+    expect(tree.map((t) => t.name).sort()).toEqual(['portugal', 'reise']);
+  });
+
+  it('keeps a hierarchy-linked tag alive across bumpTagCounts even at zero notes', async () => {
+    const note = await createNote({ title: 'X', bodyMarkdown: '', entryDate: '2026-01-01', tags: ['lissabon'] });
+    await setTagParent('lissabon', 'reise');
+
+    // Removing the tag from its only note would normally delete it outright.
+    await updateNote(note.id, { title: 'X', bodyMarkdown: '', entryDate: '2026-01-01', tags: [] });
+
+    expect(await db.tags.get('lissabon')).toMatchObject({ noteCount: 0, parent: 'reise' });
+    expect(await db.tags.get('reise')).toMatchObject({ noteCount: 0 });
+  });
+
+  it('keeps hierarchy-linked tags alive across rebuildTagRegistry even at zero notes', async () => {
+    const note = await createNote({ title: 'X', bodyMarkdown: '', entryDate: '2026-01-01', tags: ['lissabon'] });
+    await setTagParent('lissabon', 'reise');
+    await deleteNote(note.id);
+    await rebuildTagRegistry();
+
+    expect(await db.tags.get('lissabon')).toMatchObject({ noteCount: 0, parent: 'reise' });
+    expect(await db.tags.get('reise')).toMatchObject({ noteCount: 0 });
   });
 });

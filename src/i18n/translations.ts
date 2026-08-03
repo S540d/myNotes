@@ -7,6 +7,7 @@ export interface Translations {
   };
   home: {
     syncLink: string;
+    importExportLink: string;
     newEntry: string;
     searchPlaceholder: string;
     emptyState: string;
@@ -31,6 +32,27 @@ export interface Translations {
   };
   similarNotes: {
     heading: string;
+  };
+  importExport: {
+    heading: string;
+    exportHeading: string;
+    exportJson: string;
+    exportMarkdownZip: string;
+    importHeading: string;
+    dropzoneText: string;
+    chooseFile: string;
+    formatNotRecognized: string;
+    parseError: (message: string) => string;
+    detectedFormat: (label: string) => string;
+    previewCount: (n: number) => string;
+    columnTitle: string;
+    columnDate: string;
+    columnTags: string;
+    selectAll: string;
+    deselectAll: string;
+    importButton: (n: number) => string;
+    importing: string;
+    importResult: (n: number) => string;
   };
   conflict: {
     bannerHeading: string;
@@ -122,6 +144,7 @@ const de: Translations = {
   },
   home: {
     syncLink: 'Sync',
+    importExportLink: 'Import/Export',
     newEntry: '+ Neuer Eintrag',
     searchPlaceholder: 'Einträge durchsuchen…',
     emptyState: 'Noch keine Einträge. Leg mit „+ Neuer Eintrag“ los.',
@@ -146,6 +169,27 @@ const de: Translations = {
   },
   similarNotes: {
     heading: 'Ähnliche Einträge',
+  },
+  importExport: {
+    heading: 'Import & Export',
+    exportHeading: 'Export',
+    exportJson: 'Als JSON exportieren',
+    exportMarkdownZip: 'Als Markdown-ZIP exportieren',
+    importHeading: 'Import',
+    dropzoneText: 'Datei hierher ziehen oder auswählen',
+    chooseFile: 'Datei auswählen',
+    formatNotRecognized: 'Dateiformat nicht erkannt.',
+    parseError: (message) => `Datei konnte nicht gelesen werden: ${message}`,
+    detectedFormat: (label) => `Erkanntes Format: ${label}`,
+    previewCount: (n) => (n === 1 ? '1 Eintrag gefunden' : `${n} Einträge gefunden`),
+    columnTitle: 'Titel',
+    columnDate: 'Datum',
+    columnTags: 'Tags',
+    selectAll: 'Alle auswählen',
+    deselectAll: 'Alle abwählen',
+    importButton: (n) => (n === 1 ? '1 Eintrag importieren' : `${n} Einträge importieren`),
+    importing: 'Importiere…',
+    importResult: (n) => (n === 1 ? '1 Eintrag importiert.' : `${n} Einträge importiert.`),
   },
   conflict: {
     bannerHeading: 'Sync-Konflikte',
@@ -241,6 +285,7 @@ const en: Translations = {
   },
   home: {
     syncLink: 'Sync',
+    importExportLink: 'Import/Export',
     newEntry: '+ New entry',
     searchPlaceholder: 'Search entries…',
     emptyState: 'No entries yet. Get started with "+ New entry".',
@@ -265,6 +310,27 @@ const en: Translations = {
   },
   similarNotes: {
     heading: 'Similar entries',
+  },
+  importExport: {
+    heading: 'Import & Export',
+    exportHeading: 'Export',
+    exportJson: 'Export as JSON',
+    exportMarkdownZip: 'Export as Markdown ZIP',
+    importHeading: 'Import',
+    dropzoneText: 'Drag a file here or choose one',
+    chooseFile: 'Choose file',
+    formatNotRecognized: "File format not recognized.",
+    parseError: (message) => `Couldn't read the file: ${message}`,
+    detectedFormat: (label) => `Detected format: ${label}`,
+    previewCount: (n) => (n === 1 ? '1 entry found' : `${n} entries found`),
+    columnTitle: 'Title',
+    columnDate: 'Date',
+    columnTags: 'Tags',
+    selectAll: 'Select all',
+    deselectAll: 'Deselect all',
+    importButton: (n) => (n === 1 ? 'Import 1 entry' : `Import ${n} entries`),
+    importing: 'Importing…',
+    importResult: (n) => (n === 1 ? '1 entry imported.' : `${n} entries imported.`),
   },
   conflict: {
     bannerHeading: 'Sync conflicts',

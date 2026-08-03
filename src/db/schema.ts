@@ -17,6 +17,8 @@ export interface SettingRecord {
 export interface TagRecord {
   name: string;
   noteCount: number;
+  /** Optional parent tag name, for the user-defined tag hierarchy (Issue #17). Not an index — tag lists are small enough to filter in JS. */
+  parent?: string;
 }
 
 class MyNotesDatabase extends Dexie {

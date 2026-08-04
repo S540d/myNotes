@@ -10,17 +10,13 @@ import { bulkSetEncryption } from '../db/repository';
 import { useSync } from '../hooks/useSync';
 import { useStoragePersistence } from '../hooks/useStoragePersistence';
 import { useI18n } from '../i18n/I18nContext';
-import { useTheme } from '../theme/ThemeContext';
-import type { ThemePreference } from '../theme/theme';
-import type { Language } from '../i18n/translations';
 
 type TestState = { kind: 'idle' } | { kind: 'testing' } | { kind: 'ok' } | { kind: 'error'; message: string };
 type BulkProgress = { kind: 'encrypt' | 'decrypt'; done: number; total: number };
 
-export function SettingsPage() {
+export function SyncPage() {
   const navigate = useNavigate();
-  const { t, language, setLanguage } = useI18n();
-  const { preference: themePreference, setPreference: setThemePreference } = useTheme();
+  const { t } = useI18n();
   const { status, lastSummary, configured, sync, refreshConfigured } = useSync();
   const unlocked = useSessionUnlocked();
   const storagePersistence = useStoragePersistence();
@@ -140,66 +136,20 @@ export function SettingsPage() {
     return <p className="p-6 text-[var(--text-secondary)]">{t.common.loading}</p>;
   }
 
-  const themeOptions: { value: ThemePreference; label: string }[] = [
-    { value: 'system', label: t.settings.themeSystem },
-    { value: 'light', label: t.settings.themeLight },
-    { value: 'dark', label: t.settings.themeDark },
-  ];
-
-  const languageOptions: { value: Language; label: string }[] = [
-    { value: 'de', label: 'Deutsch' },
-    { value: 'en', label: 'English' },
-  ];
-
   return (
     <div className="mx-auto max-w-2xl px-4 pb-24 pt-6">
-      <button type="button" onClick={() => navigate('/')} className="btn btn-ghost mb-4 !px-0">
+      <button type="button" onClick={() => navigate('/settings')} className="btn btn-ghost mb-4 !px-0">
         {t.common.back}
       </button>
 
-      <h1 className="mb-3 text-xl font-bold text-[var(--text-primary)]">{t.settings.appearanceHeading}</h1>
-      <div className="flex flex-col gap-3">
-        <div className="field-label">
-          {t.settings.themeLabel}
-          <div className="flex flex-wrap gap-2">
-            {themeOptions.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => setThemePreference(option.value)}
-                className={`chip ${themePreference === option.value ? 'chip-active' : ''}`}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </div>
+      <h1 className="mb-6 text-2xl font-bold text-[var(--text-primary)]">{t.settings.heading}</h1>
 
-        <div className="field-label">
-          {t.settings.languageLabel}
-          <div className="flex flex-wrap gap-2">
-            {languageOptions.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => setLanguage(option.value)}
-                className={`chip ${language === option.value ? 'chip-active' : ''}`}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {storagePersistence?.supported && !storagePersistence.persisted && (
-          <p className="flex items-center gap-2 text-xs text-[var(--color-amber)]">
-            <span className="status-dot status-dot-pending" />
-            {t.settings.storagePersistenceWarning}
-          </p>
-        )}
-      </div>
-
-      <h1 className="mb-6 mt-8 text-2xl font-bold text-[var(--text-primary)]">{t.settings.heading}</h1>
+      {storagePersistence?.supported && !storagePersistence.persisted && (
+        <p className="mb-4 flex items-center gap-2 text-xs text-[var(--color-amber)]">
+          <span className="status-dot status-dot-pending" />
+          {t.settings.storagePersistenceWarning}
+        </p>
+      )}
 
       <div className="flex flex-col gap-3">
         <label className="field-label">

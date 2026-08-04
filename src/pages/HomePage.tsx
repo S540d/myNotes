@@ -43,11 +43,8 @@ export function HomePage() {
       <header className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-[var(--text-primary)]">myNotes</h1>
         <div className="flex items-center gap-2">
-          <Link to="/import-export" className="btn btn-ghost">
-            {t.home.importExportLink}
-          </Link>
-          <Link to="/settings" className="btn btn-ghost">
-            {t.home.syncLink}
+          <Link to="/settings" aria-label={t.home.settingsAria} title={t.home.settingsAria} className="btn btn-ghost !px-3 text-lg leading-none">
+            &#8942;
           </Link>
           <Link to="/note/new" className="btn btn-primary">
             {t.home.newEntry}

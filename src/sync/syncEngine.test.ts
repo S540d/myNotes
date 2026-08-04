@@ -123,7 +123,7 @@ describe('runSync', () => {
 
   it('pulls a note that only exists on the remote', async () => {
     const remoteNote: Note = {
-      id: 'remote-1',
+      id: '11111111-1111-1111-1111-111111111111',
       title: 'Von einem anderen Gerät',
       bodyMarkdown: 'Inhalt',
       entryDate: '2026-02-01',
@@ -143,6 +143,29 @@ describe('runSync', () => {
     const local = await db.notes.get(remoteNote.id);
     expect(local?.title).toBe(remoteNote.title);
     expect(local?.syncState).toBe('synced');
+  });
+
+  it('ignores a remote note file whose basename is not a UUID instead of using it as a DB key or path segment', async () => {
+    const remoteNote: Note = {
+      id: '../../evil',
+      title: 'Should never be pulled',
+      bodyMarkdown: 'Inhalt',
+      entryDate: '2026-02-01',
+      tags: [],
+      createdAt: '2026-02-01T00:00:00.000Z',
+      updatedAt: '2026-02-01T00:00:00.000Z',
+      version: 1,
+      encrypted: false,
+      deleted: false,
+      syncState: 'synced',
+    };
+    fake.__setRemoteNote(remoteNote.id, JSON.stringify(remoteNote));
+
+    const summary = await runSync();
+
+    expect(summary.pulled).toBe(0);
+    expect(summary.errors).toEqual([]);
+    expect(await db.notes.count()).toBe(0);
   });
 
   it('flags a push conflict when the remote copy moved on since the local edit was queued (simultaneous two-device edit)', async () => {
@@ -200,7 +223,7 @@ describe('runSync', () => {
 
   it('applies a remote tombstone to a local note that has no pending edits', async () => {
     const remoteNote: Note = {
-      id: 'remote-2',
+      id: '22222222-2222-2222-2222-222222222222',
       title: 'Woanders gelöscht',
       bodyMarkdown: 'Inhalt',
       entryDate: '2026-02-01',

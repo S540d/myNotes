@@ -167,14 +167,21 @@ async function captureConflictShadow(
   }
 }
 
-function idFromFilename(basename: string): string {
-  return basename.replace(/\.json$/, '');
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Note/tombstone filenames are always `<uuid>.json`, written by this app itself. Rejecting anything else
+ * stops a malformed or malicious basename from the remote directory listing (compromised/MITM'd NAS) from
+ * ever being interpolated into a follow-up file path or used as a local DB key. */
+function idFromFilename(basename: string): string | undefined {
+  const id = basename.replace(/\.json$/, '');
+  return UUID_RE.test(id) ? id : undefined;
 }
 
 async function pullTombstones(config: WebDavConfig, summary: SyncSummary): Promise<void> {
   const remoteTombstones = await webdavClient.listTombstoneFiles(config);
   for (const file of remoteTombstones) {
     const id = idFromFilename(file.basename);
+    if (!id) continue;
     const local = await db.notes.get(id);
     if (!local || local.deleted) continue;
 
@@ -216,6 +223,7 @@ async function pullNotes(config: WebDavConfig, sessionKey: CryptoKey | undefined
 
   for (const file of remoteFiles) {
     const id = idFromFilename(file.basename);
+    if (!id) continue;
     const local = await db.notes.get(id);
 
     // A pending local tombstone or edit will be pushed this round (or the next);

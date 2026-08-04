@@ -7,6 +7,17 @@
     <meta name="theme-color" content="#667eea" />
     <meta name="description" content="Privates, betreiberunabhängiges Journal mit NAS-Sync" />
 
+    <!--
+      connect-src stays open to http(s) because the WebDAV sync target is a NAS URL the user
+      configures at runtime (Settings) — the CSP can't know it in advance. Everything else is
+      locked to 'self'; style-src needs 'unsafe-inline' for Tailwind's and React's inline
+      style="" attributes (e.g. progress bar widths), not for injected <script> tags.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' http: https:; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
+    />
+
     <!-- iOS Safari does not reliably read icons from manifest.json; a real link tag is required. -->
     <link rel="apple-touch-icon" href="%BASE_URL%icons/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />

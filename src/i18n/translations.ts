@@ -138,6 +138,7 @@ export interface Translations {
     connectDevice: string;
     settingUp: string;
     storagePersistenceWarning: string;
+    httpWarning: string;
   };
   settingsMenu: {
     heading: string;
@@ -296,6 +297,8 @@ const de: Translations = {
     settingUp: 'Richte ein…',
     storagePersistenceWarning:
       'Der Browser hat dauerhaften Speicher für myNotes noch nicht zugesichert. Bei seltener Nutzung könnten Daten, die noch nicht mit dem NAS synchronisiert sind, gelöscht werden. „Zum Home-Bildschirm hinzufügen“ verringert dieses Risiko.',
+    httpWarning:
+      'Diese WebDAV-URL verwendet unverschlüsseltes HTTP. Zugangsdaten (und ohne aktivierte Verschlüsselung auch der Notizinhalt) werden im Klartext übertragen. Auf HTTPS umstellen, sobald möglich.',
   },
   settingsMenu: {
     heading: 'Einstellungen',
@@ -453,6 +456,8 @@ const en: Translations = {
     settingUp: 'Setting up…',
     storagePersistenceWarning:
       "The browser hasn't granted persistent storage for myNotes yet. With infrequent use, data not yet synced to the NAS could be evicted. \"Add to Home Screen\" reduces this risk.",
+    httpWarning:
+      'This WebDAV URL uses unencrypted HTTP. Credentials (and, without encryption enabled, the note content itself) will be sent in plain text. Switch to HTTPS as soon as possible.',
   },
   settingsMenu: {
     heading: 'Settings',

@@ -163,6 +163,13 @@ export function SyncPage() {
           />
         </label>
 
+        {url.trim().toLowerCase().startsWith('http://') && (
+          <p className="flex items-center gap-2 text-xs text-[var(--color-amber)]">
+            <span className="status-dot status-dot-pending" />
+            {t.settings.httpWarning}
+          </p>
+        )}
+
         <label className="field-label">
           {t.settings.usernameLabel}
           <input

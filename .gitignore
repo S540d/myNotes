@@ -27,3 +27,9 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+# Claude Code – nur maschinenspezifische Artefakte ignorieren.
+# .claude/commands/ wird bewusst getrackt (Issue #31) → NICHT ignorieren.
+.claude/settings.local.json
+.claude/cache/
+.claude/memory/

@@ -1,0 +1,17 @@
+name: Security Scan
+
+# Caller-Template (Issue #69, Ebene A – verbindlich in ALLEN Repos).
+# Kostenloser Secret-/Token-Scan über getrackte Dateien, kein API, kein npm.
+# Nur gegen main getriggert (Husky-Hook deckt testing/lokal bereits ab).
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  security-scan:
+    uses: S540d/project-templates/.github/workflows/reusable-security-scan.yml@v1

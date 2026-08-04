@@ -129,6 +129,7 @@ export interface Translations {
     bulkProgress: (kind: 'encrypt' | 'decrypt', done: number, total: number) => string;
     needsTestFirst: string;
     newPassphraseSetup: string;
+    newPassphraseSetupLocal: string;
     existingVaultFound: string;
     passphraseLabel: string;
     passphraseConfirmLabel: string;
@@ -261,7 +262,7 @@ const de: Translations = {
     checking: 'Prüfe…',
   },
   settings: {
-    heading: 'NAS-Sync (WebDAV)',
+    heading: 'Sync & Verschlüsselung',
     webdavUrlLabel: 'WebDAV-URL',
     usernameLabel: 'Benutzername',
     passwordLabel: 'Passwort',
@@ -287,6 +288,8 @@ const de: Translations = {
     needsTestFirst: 'Erst „Verbindung testen“ oben, um zu prüfen, ob dieses NAS bereits eine Verschlüsselung eingerichtet hat.',
     newPassphraseSetup:
       'Neue Passphrase festlegen. Titel, Text, Datum und Tags werden damit vor dem Hochladen auf das NAS verschlüsselt (AES-256-GCM); das NAS sieht nur Chiffretext.',
+    newPassphraseSetupLocal:
+      'Neue Passphrase festlegen. Titel, Text, Datum und Tags werden damit lokal auf diesem Gerät verschlüsselt (AES-256-GCM) — auch ganz ohne NAS oder Sync.',
     existingVaultFound: 'Dieses NAS hat bereits eine Verschlüsselung eingerichtet. Gib die passende Passphrase ein, um dieses Gerät damit zu verbinden.',
     passphraseLabel: 'Passphrase',
     passphraseConfirmLabel: 'Passphrase bestätigen',
@@ -296,7 +299,7 @@ const de: Translations = {
     connectDevice: 'Gerät verbinden',
     settingUp: 'Richte ein…',
     storagePersistenceWarning:
-      'Der Browser hat dauerhaften Speicher für myNotes noch nicht zugesichert. Bei seltener Nutzung könnten Daten, die noch nicht mit dem NAS synchronisiert sind, gelöscht werden. „Zum Home-Bildschirm hinzufügen“ verringert dieses Risiko.',
+      'Der Browser hat dauerhaften Speicher für myNotes noch nicht zugesichert. Bei seltener Nutzung könnten lokal gespeicherte Notizen gelöscht werden – das betrifft besonders Notizen, die (noch) nicht mit einem NAS synchronisiert sind, etwa wenn du myNotes ganz ohne Sync nutzt. „Zum Home-Bildschirm hinzufügen“ verringert dieses Risiko.',
     httpWarning:
       'Diese WebDAV-URL verwendet unverschlüsseltes HTTP. Zugangsdaten (und ohne aktivierte Verschlüsselung auch der Notizinhalt) werden im Klartext übertragen. Auf HTTPS umstellen, sobald möglich.',
   },
@@ -309,7 +312,7 @@ const de: Translations = {
     themeDark: 'Dunkel',
     languageLabel: 'Sprache',
     syncCardTitle: 'Sync',
-    syncCardDesc: 'NAS-Verbindung (WebDAV) und Verschlüsselung verwalten.',
+    syncCardDesc: 'Optional: NAS-Verbindung (WebDAV) einrichten. Notizen lassen sich auch rein lokal verschlüsseln, ganz ohne NAS.',
     importExportCardTitle: 'Import/Export',
     importExportCardDesc: 'Notizen exportieren oder aus anderen Formaten importieren.',
   },
@@ -421,7 +424,7 @@ const en: Translations = {
     checking: 'Checking…',
   },
   settings: {
-    heading: 'NAS sync (WebDAV)',
+    heading: 'Sync & encryption',
     webdavUrlLabel: 'WebDAV URL',
     usernameLabel: 'Username',
     passwordLabel: 'Password',
@@ -446,6 +449,8 @@ const en: Translations = {
     needsTestFirst: 'Run "Test connection" above first, to check whether this NAS already has encryption set up.',
     newPassphraseSetup:
       'Set a new passphrase. Title, text, date, and tags will be encrypted with it before upload to the NAS (AES-256-GCM); the NAS only ever sees ciphertext.',
+    newPassphraseSetupLocal:
+      'Set a new passphrase. Title, text, date, and tags will be encrypted with it locally on this device (AES-256-GCM) — no NAS or sync required.',
     existingVaultFound: 'This NAS already has encryption set up. Enter the matching passphrase to connect this device to it.',
     passphraseLabel: 'Passphrase',
     passphraseConfirmLabel: 'Confirm passphrase',
@@ -455,7 +460,7 @@ const en: Translations = {
     connectDevice: 'Connect device',
     settingUp: 'Setting up…',
     storagePersistenceWarning:
-      "The browser hasn't granted persistent storage for myNotes yet. With infrequent use, data not yet synced to the NAS could be evicted. \"Add to Home Screen\" reduces this risk.",
+      "The browser hasn't granted persistent storage for myNotes yet. With infrequent use, locally stored notes could be evicted — this especially affects notes that aren't (yet) synced to a NAS, such as when you use myNotes without sync at all. \"Add to Home Screen\" reduces this risk.",
     httpWarning:
       'This WebDAV URL uses unencrypted HTTP. Credentials (and, without encryption enabled, the note content itself) will be sent in plain text. Switch to HTTPS as soon as possible.',
   },
@@ -468,7 +473,7 @@ const en: Translations = {
     themeDark: 'Dark',
     languageLabel: 'Language',
     syncCardTitle: 'Sync',
-    syncCardDesc: 'Manage the NAS connection (WebDAV) and encryption.',
+    syncCardDesc: 'Optional: set up a NAS connection (WebDAV). Notes can also be encrypted purely locally, without a NAS.',
     importExportCardTitle: 'Import/Export',
     importExportCardDesc: 'Export notes or import them from other formats.',
   },

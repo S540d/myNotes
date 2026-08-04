@@ -52,6 +52,7 @@ export function SyncPage() {
   }, []);
 
   const currentConfig = (): WebDavConfig => ({ url: url.trim(), username, password });
+  const hasWebdav = url.trim().length > 0;
 
   const handleSave = async () => {
     const config = currentConfig();
@@ -97,14 +98,13 @@ export function SyncPage() {
     setEncBusy(true);
     setEncError(undefined);
     try {
-      const config = currentConfig();
       let key: CryptoKey;
-      if (remoteDescriptor) {
-        key = await credentialVault.adoptRemoteVault(passphrase, remoteDescriptor, config);
+      if (hasWebdav && remoteDescriptor) {
+        key = await credentialVault.adoptRemoteVault(passphrase, remoteDescriptor, currentConfig());
       } else {
         if (passphrase.length < 8) throw new Error(t.settings.passphraseTooShort);
         if (passphrase !== confirmPassphrase) throw new Error(t.settings.passphraseMismatch);
-        key = await credentialVault.setUpVault(passphrase, config);
+        key = await credentialVault.setUpVault(passphrase, hasWebdav ? currentConfig() : undefined);
       }
       setSessionKey(key);
       await deletePlainWebDavConfig();
@@ -295,9 +295,10 @@ export function SyncPage() {
       ) : (
         <div className="flex flex-col gap-3">
           <p className="text-sm text-[var(--text-secondary)]">
-            {remoteDescriptor === undefined && t.settings.needsTestFirst}
-            {remoteDescriptor === null && t.settings.newPassphraseSetup}
-            {remoteDescriptor && t.settings.existingVaultFound}
+            {!hasWebdav && t.settings.newPassphraseSetupLocal}
+            {hasWebdav && remoteDescriptor === undefined && t.settings.needsTestFirst}
+            {hasWebdav && remoteDescriptor === null && t.settings.newPassphraseSetup}
+            {hasWebdav && remoteDescriptor && t.settings.existingVaultFound}
           </p>
 
           <label className="field-label">

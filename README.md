@@ -1,80 +1,96 @@
 # myNotes
 
-Ein privates, betreiberunabhängiges Journal als PWA. Lange, tagebuchartige Einträge
-(inkl. Reiseberichte) werden lokal auf dem Gerät gespeichert und optional mit dem
-eigenen NAS per WebDAV synchronisiert – ohne Cloud-Anbieter, ohne eigenen Server.
+A private, provider-independent journal as a PWA. Long, diary-style entries
+(including travel logs) are stored locally on the device and optionally
+synced with your own NAS via WebDAV — no cloud provider, no server of your
+own to run.
 
 **App:** https://s540d.github.io/myNotes/
 
-Das ist eine Demo-Instanz ohne vorkonfiguriertes NAS – sie zeigt die App und läuft
-vollständig offline im Browser/als installierte PWA. Für den eigentlichen Zweck
-(privates, synchronisiertes Journal) installierst du dir die App selbst und verbindest
-sie mit deinem eigenen NAS, sobald der WebDAV-Sync ([Issue #3](https://github.com/S540d/myNotes/issues/3)) fertig ist.
+This is a demo instance without a preconfigured NAS — it shows the app and
+runs fully offline in the browser/as an installed PWA. For the actual use
+case (a private, synced journal), install the app yourself and connect it
+to your own NAS via the WebDAV sync built into the Settings page.
 
 ## Status
 
-Dieses Repository befindet sich im aktiven Aufbau. Der aktuelle Stand deckt **Phase 1**
-des Implementierungsplans ab: eine voll offline nutzbare, installierbare PWA mit
-lokaler Journal-Verwaltung (Anlegen, Bearbeiten, Löschen, Tag-Filter, einfache Suche).
+All originally planned implementation phases are done:
 
-Geplante, noch nicht umgesetzte Phasen sind als GitHub Issues getrackt:
-- [#3 WebDAV-Sync mit dem NAS](https://github.com/S540d/myNotes/issues/3)
-- [#4 Client-seitige Verschlüsselung](https://github.com/S540d/myNotes/issues/4) (AES-GCM, Passphrase-basiert)
-- [#5 Volltextsuche via FlexSearch](https://github.com/S540d/myNotes/issues/5) (aktuell: einfache Teilstring-Suche als Platzhalter)
-- [#6 Import/Export](https://github.com/S540d/myNotes/issues/6) (JSON, Markdown, Evernote `.enex`, WordPress-Export)
-- [#7 Konflikt-UX & Härtung](https://github.com/S540d/myNotes/issues/7) (Threat-Model-Dokumentation, NAS-Setup-Anleitung)
-- [#8 Testing-Infrastruktur](https://github.com/S540d/myNotes/issues/8) (begleitend)
+- **Phase 1 — Local journal + PWA shell**: fully offline-capable, installable
+  PWA with local journal management (create, edit, delete, tag filter,
+  search).
+- **Phase 2 — WebDAV sync**: syncs notes with your own NAS over WebDAV
+  (outbox/push, incremental pull, ETag-based optimistic concurrency,
+  offline queue).
+- **Phase 3 — Client-side encryption**: optional passphrase-based AES-GCM
+  encryption of note content, with a PBKDF2-derived key kept in memory only
+  for the session. See [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md) for
+  exactly what this does and doesn't protect.
+- **Phase 4 — Full-text search**: FlexSearch-based full-text search and tag
+  filtering over locally decrypted content.
+- **Phase 5 — Import/Export**: lossless JSON export, Markdown/ZIP export,
+  and a pluggable importer registry (myNotes JSON, Markdown with
+  frontmatter, plaintext, Evernote `.enex`, WordPress WXR).
+- **Phase 6 — Conflict UX & hardening**: manual conflict resolution UI,
+  threat-model documentation, NAS setup guide
+  ([`docs/NAS_SETUP.md`](docs/NAS_SETUP.md)).
+- **Phase 7 — Testing infrastructure**: unit tests (Vitest), a WebDAV
+  integration test against a real server, and Playwright PWA E2E tests —
+  see [`docs/TESTING.md`](docs/TESTING.md).
 
-## Ziele
+The original architecture and design plan (data model, sync engine,
+encryption design) remains available as a reference in
+[`docs/PLAN.md`](docs/PLAN.md).
 
-- **Betreiberunabhängig**: keine Abhängigkeit von einem Cloud-Anbieter, alle Daten
-  bleiben auf dem eigenen NAS.
-- **Maximale Privatsphäre**: optionale Ende-zu-Ende-Verschlüsselung, bei der das NAS
-  nur Chiffretext sieht.
-- **Simpel**: bewusst reduzierter Funktionsumfang für Single-User-Journaling, lose an
-  WordPress angelehnt, aber ohne dessen Komplexität.
-- **Ort für viele Gedanken und Reiseberichte**: Journal-Struktur mit Datum, Tags und
-  Suche, ausgelegt auf Jahre an Einträgen.
+## Goals
 
-## Tech-Stack
+- **Provider-independent**: no dependency on a cloud provider, all data
+  stays on your own NAS.
+- **Maximum privacy**: optional end-to-end encryption where the NAS only
+  ever sees ciphertext.
+- **Simple**: deliberately reduced feature set for single-user journaling,
+  loosely inspired by WordPress but without its complexity.
+- **A home for many thoughts and travel logs**: journal structure with
+  date, tags, and search, built for years of entries.
 
-React 18 + Vite (TypeScript) · Dexie.js (IndexedDB) · `vite-plugin-pwa` (Workbox) ·
-CodeMirror 6 · React Router · Tailwind CSS.
+## Tech stack
 
-## Entwicklung
+React 18 + Vite (TypeScript) · Dexie.js (IndexedDB) · `vite-plugin-pwa`
+(Workbox) · CodeMirror 6 · React Router · Tailwind CSS · `webdav` ·
+Web Crypto API (AES-GCM, PBKDF2) · FlexSearch · `turndown` / `jszip` for
+import/export.
+
+## Development
 
 ```bash
 npm install
-npm run dev      # Dev-Server
-npm run build    # Produktions-Build (inkl. Typecheck)
+npm run dev      # dev server
+npm run build     # production build (incl. type check)
 npm run lint      # oxlint
 npm test          # Vitest unit tests
-npm run test:e2e  # Playwright PWA E2E (installiert vorher `npx playwright install chromium`)
+npm run test:e2e  # Playwright PWA E2E (first run `npx playwright install chromium`)
 ```
 
-Details zur Test-Infrastruktur (inkl. optionalem WebDAV-Integrationstest via Docker):
+Details on the test infrastructure (including the optional WebDAV
+integration test via Docker):
 [`docs/TESTING.md`](docs/TESTING.md).
 
-Die App ist als PWA ausgelegt und läuft installiert sowohl auf Android Chrome als auch
-über "Zum Home-Bildschirm" in iOS Safari.
+The app is built as a PWA and runs installed both on Android Chrome and,
+via "Add to Home Screen", on iOS Safari.
 
-## Wie geht es weiter?
+## NAS sync setup
 
-Aktueller Stand: **Phase 1** (lokales Journal + PWA-Shell) ist abgeschlossen und läuft
-als Demo auf GitHub Pages. Der nächste Schritt ist
-[**Issue #3: WebDAV-Sync**](https://github.com/S540d/myNotes/issues/3) mit dem eigenen
-NAS, danach folgen Verschlüsselung, Volltextsuche und Import/Export (siehe die
-Issue-Liste oben). Jedes Issue ist so geschrieben, dass es eigenständig – auch in einer
-neuen Session – aufgegriffen werden kann. Der vollständige Implementierungsplan
-(Datenmodell, Sync-Engine, Verschlüsselungsdesign) steht als Referenz in
-[`docs/PLAN.md`](docs/PLAN.md).
+To connect myNotes to your own NAS via WebDAV (including the CORS
+configuration required for browser-based WebDAV access), see
+[`docs/NAS_SETUP.md`](docs/NAS_SETUP.md).
 
 ## Deployment
 
-Der `main`-Branch wird automatisch per GitHub Actions
-(`.github/workflows/deploy-pages.yml`) gebaut und auf GitHub Pages veröffentlicht.
-Voraussetzung (einmalig, durch Repo-Owner): in den Repo-Settings unter „Pages“ die
-Quelle auf „GitHub Actions“ stellen.
+The `main` branch is automatically built and published to GitHub Pages via
+GitHub Actions (`.github/workflows/deploy-pages.yml`). One-time
+prerequisite (done by the repo owner): set the Pages source to "GitHub
+Actions" in the repo settings.
 
-Für einen Deploy auf dem eigenen NAS/Webserver statt GitHub Pages: `npm run build --
---base=/` (oder den gewünschten Unterpfad) und den Inhalt von `dist/` dorthin kopieren.
+To deploy on your own NAS/web server instead of GitHub Pages: run
+`npm run build -- --base=/` (or your desired subpath) and copy the contents
+of `dist/` there.

@@ -3,11 +3,13 @@ import { useI18n } from '../i18n/I18nContext';
 import { useTheme } from '../theme/ThemeContext';
 import type { ThemePreference } from '../theme/theme';
 import type { Language } from '../i18n/translations';
+import { useStoragePersistence } from '../hooks/useStoragePersistence';
 
 export function SettingsMenuPage() {
   const navigate = useNavigate();
   const { t, language, setLanguage } = useI18n();
   const { preference: themePreference, setPreference: setThemePreference } = useTheme();
+  const storagePersistence = useStoragePersistence();
 
   const themeOptions: { value: ThemePreference; label: string }[] = [
     { value: 'system', label: t.settingsMenu.themeSystem },
@@ -27,6 +29,13 @@ export function SettingsMenuPage() {
       </button>
 
       <h1 className="mb-6 text-2xl font-bold text-[var(--text-primary)]">{t.settingsMenu.heading}</h1>
+
+      {storagePersistence?.supported && !storagePersistence.persisted && (
+        <p className="mb-6 flex items-center gap-2 text-xs text-[var(--color-amber)]">
+          <span className="status-dot status-dot-pending" />
+          {t.settings.storagePersistenceWarning}
+        </p>
+      )}
 
       <h2 className="mb-3 text-xl font-bold text-[var(--text-primary)]">{t.settingsMenu.appearanceHeading}</h2>
       <div className="mb-8 flex flex-col gap-3">

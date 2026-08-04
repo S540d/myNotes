@@ -99,7 +99,7 @@ In myNotes' Settings page, set:
 - **WebDAV-URL**: the HTTPS URL from step 2 (e.g. `https://webdav.your-domain.example/` if the proxy already routes to the shared folder, matching the placeholder format `https://mein-nas.example.com/webdav/myNotes`).
 - **Benutzername / Passwort**: the dedicated account from step 1.
 
-Then "Jetzt synchronisieren" ("Sync now"). See `docs/PLAN.md` for how the sync engine itself behaves (push/pull, conflict handling) once connected.
+Then "Jetzt synchronisieren" ("Sync now"). See `CLAUDE.md` for how the sync engine itself behaves (push/pull, conflict handling) once connected.
 
 ---
-Part of the overall plan in `docs/PLAN.md`; see `docs/THREAT_MODEL.md` for what this setup does and doesn't protect against.
+See `CLAUDE.md` for the overall architecture, and `docs/THREAT_MODEL.md` for what this setup does and doesn't protect against.

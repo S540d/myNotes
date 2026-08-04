@@ -67,4 +67,4 @@ Anyone with write access to the NAS (the operator, a compromised NAS) can delete
 | Passphrase itself | ✅ Never transmitted or stored, but its strength is the only brute-force defense |
 
 ---
-Part of the overall plan in `docs/PLAN.md`; see there for the full architecture (data model, sync engine, crypto envelope).
+See `CLAUDE.md` for the full architecture (data model, sync engine, crypto envelope).

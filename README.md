@@ -1,31 +1,33 @@
 # myNotes
 
 A private, provider-independent journal as a PWA. Long, diary-style entries
-(including travel logs) are stored locally on the device and optionally
-synced with your own NAS via WebDAV — no cloud provider, no server of your
-own to run.
+(including travel logs) are stored locally on the device — no cloud
+provider, no server of your own to run. Syncing with your own NAS via
+WebDAV, and passphrase encryption, are both entirely optional and
+independent of each other: you can use myNotes purely local, encrypt it
+without ever setting up a NAS, sync without encryption, or both.
 
 **App:** https://s540d.github.io/myNotes/
 
 This is a demo instance without a preconfigured NAS — it shows the app and
-runs fully offline in the browser/as an installed PWA. For the actual use
-case (a private, synced journal), install the app yourself and connect it
-to your own NAS via the WebDAV sync built into the Settings page.
+runs fully offline in the browser/as an installed PWA. Install it and use
+it as-is for a private, local-only journal, or connect it to your own NAS
+via the WebDAV sync built into the Settings page for multi-device sync.
 
 ## Status
 
-All originally planned implementation phases are done:
-
-The original architecture and design plan (data model, sync engine,
-encryption design) remains available as a reference in
-[`docs/PLAN.md`](docs/PLAN.md).
+All originally planned implementation phases are done. The architecture
+(data model, sync engine, encryption design) is documented in
+[`CLAUDE.md`](CLAUDE.md).
 
 ## Goals
 
-- **Provider-independent**: no dependency on a cloud provider, all data
-  stays on your own NAS.
-- **Maximum privacy**: optional end-to-end encryption where the NAS only
-  ever sees ciphertext.
+- **Works fully without a NAS**: local storage and local encryption are
+  first-class, not a fallback — NAS sync is opt-in on top.
+- **Provider-independent**: no dependency on a cloud provider; if you do
+  sync, data stays on your own NAS.
+- **Maximum privacy**: optional end-to-end encryption where, if synced,
+  the NAS only ever sees ciphertext.
 - **Simple**: deliberately reduced feature set for single-user journaling,
   loosely inspired by WordPress but without its complexity.
 - **A home for many thoughts and travel logs**: journal structure with

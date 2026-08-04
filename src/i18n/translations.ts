@@ -6,8 +6,7 @@ export interface Translations {
     loading: string;
   };
   home: {
-    syncLink: string;
-    importExportLink: string;
+    settingsAria: string;
     newEntry: string;
     searchPlaceholder: string;
     emptyState: string;
@@ -138,13 +137,20 @@ export interface Translations {
     activateEncryption: string;
     connectDevice: string;
     settingUp: string;
+    storagePersistenceWarning: string;
+  };
+  settingsMenu: {
+    heading: string;
     appearanceHeading: string;
     themeLabel: string;
     themeSystem: string;
     themeLight: string;
     themeDark: string;
     languageLabel: string;
-    storagePersistenceWarning: string;
+    syncCardTitle: string;
+    syncCardDesc: string;
+    importExportCardTitle: string;
+    importExportCardDesc: string;
   };
 }
 
@@ -154,8 +160,7 @@ const de: Translations = {
     loading: 'Lade…',
   },
   home: {
-    syncLink: 'Sync',
-    importExportLink: 'Import/Export',
+    settingsAria: 'Einstellungen',
     newEntry: '+ Neuer Eintrag',
     searchPlaceholder: 'Einträge durchsuchen…',
     emptyState: 'Noch keine Einträge. Leg mit „+ Neuer Eintrag“ los.',
@@ -289,14 +294,21 @@ const de: Translations = {
     activateEncryption: 'Verschlüsselung aktivieren',
     connectDevice: 'Gerät verbinden',
     settingUp: 'Richte ein…',
+    storagePersistenceWarning:
+      'Der Browser hat dauerhaften Speicher für myNotes noch nicht zugesichert. Bei seltener Nutzung könnten Daten, die noch nicht mit dem NAS synchronisiert sind, gelöscht werden. „Zum Home-Bildschirm hinzufügen“ verringert dieses Risiko.',
+  },
+  settingsMenu: {
+    heading: 'Einstellungen',
     appearanceHeading: 'Darstellung',
     themeLabel: 'Erscheinungsbild',
     themeSystem: 'System',
     themeLight: 'Hell',
     themeDark: 'Dunkel',
     languageLabel: 'Sprache',
-    storagePersistenceWarning:
-      'Der Browser hat dauerhaften Speicher für myNotes noch nicht zugesichert. Bei seltener Nutzung könnten Daten, die noch nicht mit dem NAS synchronisiert sind, gelöscht werden. „Zum Home-Bildschirm hinzufügen“ verringert dieses Risiko.',
+    syncCardTitle: 'Sync',
+    syncCardDesc: 'NAS-Verbindung (WebDAV) und Verschlüsselung verwalten.',
+    importExportCardTitle: 'Import/Export',
+    importExportCardDesc: 'Notizen exportieren oder aus anderen Formaten importieren.',
   },
 };
 
@@ -306,8 +318,7 @@ const en: Translations = {
     loading: 'Loading…',
   },
   home: {
-    syncLink: 'Sync',
-    importExportLink: 'Import/Export',
+    settingsAria: 'Settings',
     newEntry: '+ New entry',
     searchPlaceholder: 'Search entries…',
     emptyState: 'No entries yet. Get started with "+ New entry".',
@@ -440,14 +451,21 @@ const en: Translations = {
     activateEncryption: 'Activate encryption',
     connectDevice: 'Connect device',
     settingUp: 'Setting up…',
+    storagePersistenceWarning:
+      "The browser hasn't granted persistent storage for myNotes yet. With infrequent use, data not yet synced to the NAS could be evicted. \"Add to Home Screen\" reduces this risk.",
+  },
+  settingsMenu: {
+    heading: 'Settings',
     appearanceHeading: 'Appearance',
     themeLabel: 'Theme',
     themeSystem: 'System',
     themeLight: 'Light',
     themeDark: 'Dark',
     languageLabel: 'Language',
-    storagePersistenceWarning:
-      "The browser hasn't granted persistent storage for myNotes yet. With infrequent use, data not yet synced to the NAS could be evicted. \"Add to Home Screen\" reduces this risk.",
+    syncCardTitle: 'Sync',
+    syncCardDesc: 'Manage the NAS connection (WebDAV) and encryption.',
+    importExportCardTitle: 'Import/Export',
+    importExportCardDesc: 'Export notes or import them from other formats.',
   },
 };
 

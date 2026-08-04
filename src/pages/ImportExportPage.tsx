@@ -94,7 +94,7 @@ export function ImportExportPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 pb-24 pt-6">
-      <button type="button" onClick={() => navigate('/')} className="btn btn-ghost mb-4 !px-0">
+      <button type="button" onClick={() => navigate('/settings')} className="btn btn-ghost mb-4 !px-0">
         {t.common.back}
       </button>
 

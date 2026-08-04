@@ -1,0 +1,17 @@
+name: Gitignore Audit
+
+# Caller-Template (Issue #69, Ebene A – verbindlich in ALLEN Repos).
+# Prüft .gitignore-Pflichteinträge + dass keine Secrets getrackt werden, kein API, kein npm.
+# Nur gegen main getriggert (Husky-Hook deckt testing/lokal bereits ab).
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  gitignore-audit:
+    uses: S540d/project-templates/.github/workflows/reusable-gitignore-audit.yml@v1

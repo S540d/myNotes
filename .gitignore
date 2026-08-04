@@ -27,3 +27,21 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+# Claude Code – nur maschinenspezifische Artefakte ignorieren.
+# .claude/commands/ wird bewusst getrackt (Issue #31) → NICHT ignorieren.
+.claude/settings.local.json
+.claude/cache/
+.claude/memory/
+
+# Secrets / credentials (Pflichteinträge gitignore-audit)
+.env
+.env.local
+credentials.json
+*.jks
+*.keystore
+*.p12
+*.p8
+
+# Interne Doku darf nicht getrackt werden (Pflichteintrag gitignore-audit)
+docs/private/

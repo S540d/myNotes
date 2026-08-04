@@ -1,0 +1,20 @@
+name: Branch Guard
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  block-feature-to-main:
+    name: Block feature branches → main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enforce testing as intermediate target
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          if [[ "$HEAD_REF" == feature/* || "$HEAD_REF" == fix/* || "$HEAD_REF" == claude/* || "$HEAD_REF" == chore/* || "$HEAD_REF" == docs/* ]]; then
+            echo "::error::Branch '$HEAD_REF' must target 'testing', not 'main'."
+            echo "Bitte PR-Basis auf 'testing' ändern. testing → main nur manuell und mit Erlaubnis."
+            exit 1
+          fi

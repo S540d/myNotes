@@ -1,6 +1,6 @@
 # Testing
 
-Companion infra for [Issue #8](https://github.com/S540d/myNotes/issues/8); see `docs/PLAN.md` for the overall architecture these tests exercise.
+Companion infra for [Issue #8](https://github.com/S540d/myNotes/issues/8); see `CLAUDE.md` for the overall architecture these tests exercise.
 
 ## Unit tests (Vitest)
 
@@ -42,7 +42,7 @@ npm run test:e2e
 - the app still renders and is usable with the network fully cut (`context.setOffline(true)`),
 - a note can be created while offline (local-first CRUD).
 
-iOS Safari's PWA specifics (storage eviction, standalone-mode quirks) aren't reliably reproducible under Playwright's WebKit engine and remain a manual test on a real/simulated device, per `docs/PLAN.md`.
+iOS Safari's PWA specifics (storage eviction, standalone-mode quirks) aren't reliably reproducible under Playwright's WebKit engine and remain a manual test on a real/simulated device.
 
 ## Fixtures
 

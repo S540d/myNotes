@@ -1,5 +1,10 @@
 # myNotes
 
+**STOPPED**
+unterschied zu joplin gering (myNotes: browserbasiert, Joplin zur Installation). 
+substanzieller Trade-off für CORS in dieser Lösung, weil Browser nicht persistent speichert
+
+
 A private, provider-independent journal as a PWA. Long, diary-style entries
 (including travel logs) are stored locally on the device — no cloud
 provider, no server of your own to run. Syncing with your own NAS via

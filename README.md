@@ -16,9 +16,17 @@ via the WebDAV sync built into the Settings page for multi-device sync.
 
 ## Status
 
-All originally planned implementation phases are done. The architecture
-(data model, sync engine, encryption design) is documented in
+All originally planned implementation phases are code-complete. The
+architecture (data model, sync engine, encryption design) is documented in
 [`CLAUDE.md`](CLAUDE.md).
+
+**Open item:** connecting myNotes to a real NAS over WebDAV from a browser
+requires a CORS reverse-proxy in front of the NAS's WebDAV service (see
+[`docs/NAS_SETUP.md`](docs/NAS_SETUP.md)) — this is a browser-vs-native-app
+constraint, not a bug in myNotes, and it's currently unresolved for at least
+one real NAS (tracked in [issue #31](https://github.com/S540d/myNotes/issues/31)).
+Whether it's worth finishing given a working native WebDAV client already in
+use for the same NAS is an open decision, recorded in `CLAUDE.md`.
 
 ## Goals
 

@@ -7,6 +7,14 @@ offline/local-only forever, with no server of any kind required.
 
 ## Core principle: local-first, sync-optional
 
+**Runs entirely in the browser, no build/native-app step of its own** —
+this is what lets myNotes be installed from just a URL, but it's also why
+NAS sync needs the one extra CORS step in `docs/NAS_SETUP.md`: the browser
+sandbox applies even when installed as a PWA, unlike a native WebDAV client
+(e.g. Joplin), which never runs inside a browser and so never hits CORS at
+all. See "Open decision" below for the current status of that step against
+a real NAS.
+
 - `src/db/repository.ts` is the only place that writes notes. Every
   mutation (`createNote`, `updateNote`, `deleteNote`, …) writes to Dexie
   and enqueues a `syncQueue` entry unconditionally — sync being
@@ -103,8 +111,7 @@ snapshot, keep these updated when behavior changes):
 ## Sync engine (when configured)
 
 - **Push**: every local mutation lands atomically in `notes` +
-  `syncQueue`. A drain loop (triggers: app foreground, `online` event,
-  timer, manual "Sync now") does `PUT` with `If-Match: <remoteEtag>` for
+  `syncQueue`. A drain loop does `PUT` with `If-Match: <remoteEtag>` for
   optimistic concurrency; deletes write a tombstone first, then remove the
   note file.
 - **Pull**: `PROPFIND (Depth: 1)` lists all files with ETag/Last-Modified
@@ -114,8 +121,49 @@ snapshot, keep these updated when behavior changes):
   copy, the losing remote version is stashed as `conflictShadow` for
   manual resolution (keep local/remote/both) in the UI — no silent data
   loss.
+- **Trigger — current state vs. plan**: today the drain loop only runs on
+  the manual "Jetzt synchronisieren" button (`useSync().sync()` in
+  `src/hooks/useSync.ts`, wired up in `SyncPage.tsx`). Automatic triggers
+  (app-foreground via `visibilitychange`, the `online` event, a periodic
+  timer) are the intended target behavior but are **not implemented** —
+  don't assume `useSync.ts` already does this; it doesn't. See the open
+  decision below before building it.
 - **No Background Sync API** (unavailable on iOS Safari) — sync only runs
   while the app is open; this is deliberate, not a gap.
+
+## Open decision: is myNotes' own WebDAV sync still worth finishing? (Issue #31)
+
+Status as of 2026-08-05, kept here so a future session can pick this up
+without re-deriving it:
+
+- **The blocker isn't the NAS config, it's the browser.** Issue #31's
+  original diagnosis (CORS reverse-proxy in front of Synology's WebDAV)
+  is correct but only half the picture. myNotes runs as a page in a real
+  browser tab (even installed as a PWA, it's still a browser rendering
+  context), so the browser's CORS enforcement applies to every `fetch()`
+  in `src/sync/webdavClient.ts` regardless of PWA install state. Compare
+  Joplin, which the user already runs successfully against the same NAS
+  at `http://192.168.1.79:5005/home/Drive/joplin/` with **no CORS
+  workaround at all** — that works because Joplin's sync client runs in a
+  native Electron/mobile process, not a browser sandbox, so CORS never
+  applies to it in the first place. A CORS reverse-proxy in front of the
+  NAS's WebDAV (`docs/NAS_SETUP.md`) is still the only way to make a
+  *browser-based* client like myNotes work; there is no shortcut that
+  copies Joplin's setup as-is.
+- **Directory model**: independent of the CORS question, the target
+  directory should be a dedicated shared folder with its own
+  WebDAV-scoped user (`docs/NAS_SETUP.md` steps 1.3/1.4) — not an
+  existing personal home directory (Issue #31's original target path,
+  `/volume1/homes/sven/Drive/myNotes`, was a home-directory path and
+  should be moved to a dedicated share).
+- **Open question, not yet decided**: the user already has a working
+  WebDAV sync via Joplin against this NAS. Whether it's still worth
+  standing up the CORS reverse-proxy for myNotes specifically (vs.
+  treating myNotes as local-only/import-export-only for now, or
+  eventually wrapping it as a native app shell to sidestep CORS the way
+  Joplin does) is **open** — no decision has been made either way. Don't
+  assume NAS sync is "the next thing to finish"; check with the user
+  first if picking this back up.
 
 ## i18n
 

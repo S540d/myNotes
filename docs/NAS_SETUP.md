@@ -4,6 +4,10 @@ myNotes runs entirely in the browser (it's a PWA, not a server-rendered app) and
 
 This guide covers enabling WebDAV on Synology DSM and QNAP QTS, and the reverse-proxy step both need for CORS.
 
+**Why a native WebDAV client (e.g. Joplin) doesn't need any of this:** if you already have Joplin or another desktop/mobile app syncing happily to the same NAS with no CORS setup at all, that's not a contradiction — those clients run as native Electron/mobile processes, which the browser's CORS enforcement never applies to in the first place. myNotes runs as a page inside an actual browser (this stays true even when installed as a PWA — it's still a browser rendering context), so every request in `src/sync/webdavClient.ts` is subject to CORS regardless of install state. There's no way to point myNotes at the same raw WebDAV port a native client uses and skip the proxy step below; the proxy is the actual cost of running in a browser instead of a native app.
+
+**Target directory:** use a **dedicated shared folder** (e.g. `myNotes`) with a WebDAV user scoped only to that folder — not an existing personal home directory (e.g. `/homes/<user>/...`) and not a general-purpose public share used for other files. See steps 3–4 below. This keeps the blast radius of the sync credentials to one folder, and avoids mixing myNotes' UUID-named note files into a folder you browse for other reasons.
+
 ## 1. Enable WebDAV on the NAS
 
 ### Synology DSM

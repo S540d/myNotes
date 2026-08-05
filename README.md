@@ -1,7 +1,7 @@
 # myNotes
 
 **STOPPED**: unterschied zu joplin gering (myNotes: browserbasiert, Joplin zur Installation). 
-substanzieller Trade-off für CORS in dieser Lösung, weil Browser nicht persistent speichert
+substanzieller Trade-off für CORS in dieser Lösung, weil Browser nicht persistent speichert.
 weiterführung zu entscheiden. 
 
 A private, provider-independent journal as a PWA. Long, diary-style entries

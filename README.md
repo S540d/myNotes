@@ -7,6 +7,17 @@ WebDAV, and passphrase encryption, are both entirely optional and
 independent of each other: you can use myNotes purely local, encrypt it
 without ever setting up a NAS, sync without encryption, or both.
 
+**A property of running fully in the browser:** unlike native WebDAV
+clients (e.g. Joplin, or a desktop file manager's "connect to server"),
+myNotes never leaves the browser sandbox — install it as a PWA and it's
+still a browser rendering process underneath. That's what makes it work
+anywhere with just a URL, with no install/build step of its own. The
+trade-off is one small, one-time extra step for NAS sync: the browser's
+CORS policy blocks WebDAV requests to your NAS until the NAS side adds a
+few CORS response headers (a reverse-proxy rule, not custom code) — see
+[`docs/NAS_SETUP.md`](docs/NAS_SETUP.md). Native clients don't need this
+because they never run inside a browser in the first place.
+
 **App:** https://s540d.github.io/myNotes/
 
 This is a demo instance without a preconfigured NAS — it shows the app and
@@ -20,13 +31,11 @@ All originally planned implementation phases are code-complete. The
 architecture (data model, sync engine, encryption design) is documented in
 [`CLAUDE.md`](CLAUDE.md).
 
-**Open item:** connecting myNotes to a real NAS over WebDAV from a browser
-requires a CORS reverse-proxy in front of the NAS's WebDAV service (see
-[`docs/NAS_SETUP.md`](docs/NAS_SETUP.md)) — this is a browser-vs-native-app
-constraint, not a bug in myNotes, and it's currently unresolved for at least
-one real NAS (tracked in [issue #31](https://github.com/S540d/myNotes/issues/31)).
-Whether it's worth finishing given a working native WebDAV client already in
-use for the same NAS is an open decision, recorded in `CLAUDE.md`.
+**Open item:** the CORS reverse-proxy step described above is still
+unresolved for at least one real NAS (tracked in
+[issue #31](https://github.com/S540d/myNotes/issues/31)). Whether it's worth
+finishing given a working native WebDAV client already in use for the same
+NAS is an open decision, recorded in `CLAUDE.md`.
 
 ## Goals
 

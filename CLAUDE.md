@@ -7,6 +7,14 @@ offline/local-only forever, with no server of any kind required.
 
 ## Core principle: local-first, sync-optional
 
+**Runs entirely in the browser, no build/native-app step of its own** —
+this is what lets myNotes be installed from just a URL, but it's also why
+NAS sync needs the one extra CORS step in `docs/NAS_SETUP.md`: the browser
+sandbox applies even when installed as a PWA, unlike a native WebDAV client
+(e.g. Joplin), which never runs inside a browser and so never hits CORS at
+all. See "Open decision" below for the current status of that step against
+a real NAS.
+
 - `src/db/repository.ts` is the only place that writes notes. Every
   mutation (`createNote`, `updateNote`, `deleteNote`, …) writes to Dexie
   and enqueues a `syncQueue` entry unconditionally — sync being
